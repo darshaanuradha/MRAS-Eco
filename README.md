@@ -6,14 +6,14 @@
 ![Bootstrap](https://img.shields.io/badge/Bootstrap-5.3-7952B3?style=flat&logo=bootstrap)
 
 **Institution:** University of Vocational Technology (UOVT)  
-**Module:** IT304040 Python Programming – Final Group Project  
+**Module:** IT304040 Python Programming – Group Project  
 **Domain:** Healthcare & Bio-Medical Informatics (Digital Health & Decarbonization)
 
 ---
 
 ## 🌍 Live Deployment
 
-**Access the live application here:** `[Insert your Render or Railway URL here]`
+**Access the live application here:** 
 
 ---
 
@@ -52,49 +52,56 @@ Ensure you have **Python 3.10+** and **Git** installed on your machine.
 ### 2. Clone the Repository
 
 ```bash
-git clone [https://github.com/your-username/mras-eco.git](https://github.com/your-username/mras-eco.git)
+git clone https://github.com/darshaanuradha/MRAS-Eco.git
 cd mras-eco
-
-3. Create and Activate a Virtual EnvironmentWindows:Bashpython -m venv venv
+```
+### 3. Create and Activate a Virtual EnvironmentWindows:
+```bash
+python -m venv venv
 venv\Scripts\activate
-macOS/Linux:Bashpython3 -m venv venv
-source venv/bin/activate
-4. Install DependenciesBashpip install -r requirements.txt
-5. Environment Variables (API Key)Create a .env file in the project root (mras_core/.env) and add your OpenWeatherMap API key for the climate module:Code snippetWEATHER_API_KEY=your_api_key_here
-DJANGO_SECRET_KEY=your_django_secret
-DEBUG=True
-6. Run Database MigrationsBashpython manage.py makemigrations
-python manage.py migrate
-7. Create a Superuser (Admin Account)Bashpython manage.py createsuperuser
-(Follow the prompts to set a username, email, and password).8. Run the Development ServerBashpython manage.py runserver
-Navigate to http://127.0.0.1:8000 in your browser to view the application.🖥️ Usage GuideAdmin Setup: Log in via http://127.0.0.1:8000/admin using your superuser credentials to populate initial data (add Medicines, register Staff Users).Patient Registration: Navigate to the Patients dashboard to register a new corporate employee into the system.Clinical Consultation: A user with the "Doctor" role can initiate a consultation, log a diagnosis, and prescribe medication.Inventory Automation: Upon saving the consultation, the system will automatically deduct the prescribed amount from the Inventory batch and fetch the daily AQI to check for dynamic stock warnings on the main dashboard.👥 Project Team (Agile Squad)This project was developed collaboratively over a 4-week sprint using the Agile Scrum framework.NameStudent IDProject RoleL.B. Charith JeewanSIS/24/B2/36Project Manager / Scrum MasterW.I.L. WithanaSIS/24/B2/38Domain ResearcherG.B.D. Darsha AnuradhaSIS/24/B2/15Lead Developer (Backend)B.W.S.S. NawarathnaSIS/24/B2/39Lead Developer (Frontend)H.K.G.V. Lakmali KoralageSIS/24/B2/13QA & Documentation Specialist
 ```
 
-Day 1 Initialization Commands
-Once you have saved that file, open your terminal. Here are the exact commands to build your virtual environment, install these dependencies, and generate the core Django project structure.
+### 4. Install Dependencies
+```bash
+pip install -r requirements.txt
+```
+### 5. Environment Variables (API Key)
+Create a .env file in the project root (mras_core/.env) and add your OpenWeatherMap API key for the climate module:
+```bash
+WEATHER_API_KEY=your_api_key_here
+DJANGO_SECRET_KEY=your_django_secret
+DEBUG=True
+```
+### 6. Run Database Migrations
+```bash
+python manage.py makemigrations
+python manage.py migrate
+```
+### 7. Create a Superuser (Admin Account)
+```bash
+python manage.py createsuperuser
+```
+### 8. Run the Development Server
+```bash
+python manage.py runserver
+```
+Navigate to http://127.0.0.1:8000 in your browser to view the application.
 
-1. Create and activate the virtual environment:
+## 🖥️ Usage Guide
 
-Bash
-python -m venv venv
+* ⚙️ **Admin Setup:** Log in via `http://127.0.0.1:8000/admin` using your superuser credentials to populate initial data (e.g., add Medicines, register Staff Users).
+* 👤 **Patient Registration:** Navigate to the Patients dashboard to register a new corporate employee into the system.
+* 🩺 **Clinical Consultation:** A user with the "Doctor" role can initiate a consultation, log a diagnosis, and prescribe medication.
+* ⚡ **Inventory Automation:** Upon saving the consultation, the system will automatically deduct the prescribed amount from the Inventory batch and fetch the daily AQI to check for dynamic stock warnings on the main dashboard.
+## 👥 Project Team (Agile Squad)
 
-# On Windows:
+This project was developed collaboratively over a 4-week sprint using the Agile Scrum framework.
 
-venv\Scripts\activate
+| Name | Student ID | Project Role |
+| :--- | :--- | :--- |
+| **L.B. Charith Jeewan** | `SIS/24/B2/36` | 🎯 Project Manager |
+| **W.I.L. Withana** | `SIS/24/B2/38` | 🔬 Domain Researcher |
+| **G.B.D. Darsha Anuradha** | `SIS/24/B2/15` | ⚙️ Lead Developer (Backend) |
+| **B.W.S.S. Nawarathna** | `SIS/24/B2/39` | 🎨 Lead Developer (Frontend) |
+| **H.K.G.V. Lakmali Koralage** | `SIS/24/B2/13` | 📝 QA & Documentation Specialist |
 
-# On Mac/Linux:
-
-source venv/bin/activate 2. Install the pinned dependencies:
-
-Bash
-pip install -r requirements.txt 3. Initialize the core Django project:
-Note: The period . at the end of the second command is extremely important. It tells Django to build the project in your current folder rather than creating an extra nested folder.
-
-Bash
-django-admin startproject mras_core . 4. Create the four modular apps:
-
-Bash
-python manage.py startapp users
-python manage.py startapp patients
-python manage.py startapp inventory
-python manage.py startapp climate
