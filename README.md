@@ -45,7 +45,7 @@ MRAS-Eco/
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/<your-username>/MRAS-Eco.git
+git clone https://github.com/darshaanuradha/MRAS-Eco.git
 cd MRAS-Eco
 ```
 
