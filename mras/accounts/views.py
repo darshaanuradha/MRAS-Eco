@@ -4,6 +4,11 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 
+
+@login_required(login_url='login')
+def home(request):
+    return render(request, 'home.html')
+
 # REGISTER
 def register(request):
     if request.method == 'POST':
