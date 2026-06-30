@@ -8,6 +8,6 @@ database = mysql.connector.connect(
 
 cursor = database.cursor()
 
-cursor.execute("CREATE DATABASE ElderCo")
+cursor.execute("CREATE DATABASE mars")
 
 print("Database Created!")
