@@ -58,25 +58,14 @@ python -m venv venv
 venv\Scripts\activate
 ```
 
-macOS / Linux:
-
-```bash
-python3 -m venv venv
-source venv/bin/activate
-```
 
 ### 3. Install dependencies
 
 Install from the root requirements file:
 
 ```bash
+cd mras
 pip install -r requirements.txt
-```
-
-If you are working inside the `mras` folder and using its local requirements file, you can install that too:
-
-```bash
-pip install -r mras/requirements.txt
 ```
 
 ### 4. Configure the database
