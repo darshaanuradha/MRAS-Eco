@@ -1,14 +1,77 @@
 {% extends 'base.html' %}
 
-{% block title %}Home{% endblock %}
+{% block title %}Dashboard - MRAS Eco{% endblock %}
 
 {% block content %}
-<h1>Home Page</h1>
+<div class="space-y-6">
+    
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-100 pb-6">
+        <div>
+            <h1 class="text-2xl font-bold text-slate-900 tracking-tight">
+                {% if user.is_authenticated %}
+                    Welcome back, {{ user.first_name|default:user.username }}
+                {% else %}
+                    System Dashboard
+                {% endif %}
+            </h1>
+            <p class="text-sm text-slate-500 mt-1">Here is what's happening across the facility today.</p>
+        </div>
+        
+        {% if user.is_authenticated %}
+        <a href="{% url 'patients' %}" class="inline-flex items-center justify-center px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors shadow-sm text-sm font-medium">
+            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+            New Patient Entry
+        </a>
+        {% endif %}
+    </div>
 
-{% if user.is_authenticated %}
-    <p>Welcome {{ user.first_name }}</p>
-{% else %}
-    <p>Please login</p>
-{% endif %}
+    {% if user.is_authenticated %}
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div class="p-5 rounded-2xl border border-slate-100 bg-white shadow-sm flex items-center gap-4">
+                <div class="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center text-blue-600">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                </div>
+                <div>
+                    <p class="text-sm font-medium text-slate-500">Patients Today</p>
+                    <p class="text-2xl font-bold text-slate-900">24</p>
+                </div>
+            </div>
+            
+            <div class="p-5 rounded-2xl border border-slate-100 bg-white shadow-sm flex items-center gap-4">
+                <div class="w-12 h-12 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-600">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                </div>
+                <div>
+                    <p class="text-sm font-medium text-slate-500">Prescriptions</p>
+                    <p class="text-2xl font-bold text-slate-900">18</p>
+                </div>
+            </div>
 
+            <div class="p-5 rounded-2xl border border-slate-100 bg-white shadow-sm flex items-center gap-4">
+                <div class="w-12 h-12 rounded-full bg-amber-50 flex items-center justify-center text-amber-600">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                </div>
+                <div>
+                    <p class="text-sm font-medium text-slate-500">Low Stock Items</p>
+                    <p class="text-2xl font-bold text-slate-900">5</p>
+                </div>
+            </div>
+        </div>
+
+        
+        
+    {% else %}
+        <div class="text-center py-20">
+            <svg class="mx-auto h-12 w-12 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+            <h3 class="mt-2 text-sm font-medium text-slate-900">Authentication Required</h3>
+            <p class="mt-1 text-sm text-slate-500">Please log in to access the MRAS Eco dashboard.</p>
+            <div class="mt-6">
+                <a href="{% url 'login' %}" class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-lg text-white bg-emerald-600 hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500">
+                    Go to Secure Login
+                </a>
+            </div>
+        </div>
+    {% endif %}
+
+</div>
 {% endblock %}

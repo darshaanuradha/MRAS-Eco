@@ -34,6 +34,8 @@ INSTALLED_APPS = [
     'accounts',
     'inventory',
     'patients',
+    'doctors',
+    'consultation',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -79,7 +81,7 @@ WSGI_APPLICATION = 'mras.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'ElderCo',
+        'NAME': 'mars',
         'USER': 'root',
         'PASSWORD': '',
         'HOST': 'localhost',
