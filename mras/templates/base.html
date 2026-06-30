@@ -159,8 +159,8 @@
     </main>
 
     <!-- UI INTERACTION SCRIPTS -->
+    {% if user.is_authenticated %}
     <script>
-        {% if user.is_authenticated %}
         const sidebar = document.getElementById('sidebar');
         const overlay = document.getElementById('mobile-overlay');
         let isSidebarOpen = false;
@@ -183,8 +183,10 @@
                 }, 300);
             }
         }
-        {% endif %}
+    </script>
+    {% endif %}
 
+    <script>
         // Auto-dismiss Django message toasts after 5 seconds
         document.addEventListener("DOMContentLoaded", function() {
             setTimeout(() => {
