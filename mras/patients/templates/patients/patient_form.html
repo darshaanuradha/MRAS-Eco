@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+{% block title %}{{ title }} - MRAS Eco{% endblock %}
+
+{% block content %}
+<div class="max-w-xl mx-auto py-8">
+    <div class="mb-6 flex items-center justify-between">
+        <h1 class="text-2xl font-bold text-slate-900 tracking-tight">{{ title }}</h1>
+        <a href="{% url 'patients:list' %}" class="text-sm font-medium text-slate-500 hover:text-slate-700 transition-colors">
+            &larr; Back to Directory
+        </a>
+    </div>
+
+    <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 sm:p-8">
+        <form method="POST" class="space-y-6">
+            {% csrf_token %}
+
+            <div class="grid grid-cols-1 gap-6">
+                <!-- Full Name -->
+                <div>
+                    <label for="{{ form.full_name.id_for_label }}" class="block text-sm font-medium text-slate-700 mb-1">Full Name</label>
+                    {{ form.full_name }}
+                    {% if form.full_name.errors %}
+                        <p class="mt-1 text-sm text-red-600">{{ form.full_name.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    <!-- Date of Birth -->
+                    <div>
+                        <label for="{{ form.date_of_birth.id_for_label }}" class="block text-sm font-medium text-slate-700 mb-1">Date of Birth</label>
+                        {{ form.date_of_birth }}
+                        {% if form.date_of_birth.errors %}
+                            <p class="mt-1 text-sm text-red-600">{{ form.date_of_birth.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+
+                    <!-- Gender -->
+                    <div>
+                        <label for="{{ form.gender.id_for_label }}" class="block text-sm font-medium text-slate-700 mb-1">Gender</label>
+                        {{ form.gender }}
+                        {% if form.gender.errors %}
+                            <p class="mt-1 text-sm text-red-600">{{ form.gender.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    <!-- Phone -->
+                    <div>
+                        <label for="{{ form.phone_number.id_for_label }}" class="block text-sm font-medium text-slate-700 mb-1">Phone Number</label>
+                        {{ form.phone_number }}
+                        {% if form.phone_number.errors %}
+                            <p class="mt-1 text-sm text-red-600">{{ form.phone_number.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+
+                    <!-- Email -->
+                    <div>
+                        <label for="{{ form.email.id_for_label }}" class="block text-sm font-medium text-slate-700 mb-1">Email Address</label>
+                        {{ form.email }}
+                        {% if form.email.errors %}
+                            <p class="mt-1 text-sm text-red-600">{{ form.email.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Address -->
+                <div>
+                    <label for="{{ form.address.id_for_label }}" class="block text-sm font-medium text-slate-700 mb-1">Address</label>
+                    {{ form.address }}
+                    {% if form.address.errors %}
+                        <p class="mt-1 text-sm text-red-600">{{ form.address.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <!-- Medical Notes -->
+                <div>
+                    <label for="{{ form.medical_notes.id_for_label }}" class="block text-sm font-medium text-slate-700 mb-1">Medical Notes</label>
+                    {{ form.medical_notes }}
+                    {% if form.medical_notes.errors %}
+                        <p class="mt-1 text-sm text-red-600">{{ form.medical_notes.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <!-- Is Active -->
+                <div class="flex items-center mt-2">
+                    {{ form.is_active }}
+                    <label for="{{ form.is_active.id_for_label }}" class="ml-2 block text-sm font-medium text-slate-700">
+                        Patient is currently active
+                    </label>
+                </div>
+            </div>
+
+            <div class="pt-4 flex items-center gap-4">
+                <button type="submit" class="flex-1 justify-center items-center py-2.5 px-4 border border-transparent rounded-lg shadow-sm text-sm font-semibold text-white bg-emerald-600 hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 transition-all">
+                    Save Patient
+                </button>
+                {% if patient %}
+                <a href="{% url 'patients:delete' patient.pk %}" class="py-2.5 px-4 border border-red-200 text-red-600 rounded-lg hover:bg-red-50 text-sm font-semibold text-center transition-colors">
+                    Delete
+                </a>
+                {% endif %}
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
