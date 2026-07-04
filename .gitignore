@@ -4,6 +4,8 @@
 __pycache__/
 *.py[cod]
 *$py.class
+*.so
+.Python
 
 # =========================
 # Virtual environments
@@ -11,6 +13,7 @@ __pycache__/
 venv/
 env/
 .venv/
+Pipfile.lock
 
 # =========================
 # Django
@@ -19,9 +22,14 @@ env/
 local_settings.py
 db.sqlite3
 db.sqlite3-journal
-media/
+
+# Ignore collected static files (production), but KEEP source static files!
 staticfiles/
-static/
+static_root/
+# static/  <-- Do NOT ignore this if it holds your source CSS/JS
+
+# Ignore user-uploaded media
+media/
 
 # =========================
 # Environment variables
@@ -34,12 +42,18 @@ static/
 # =========================
 .vscode/
 .idea/
+*.swp
+*.swo
 
 # =========================
 # OS files
 # =========================
 .DS_Store
+.DS_Store?
+._*
 Thumbs.db
+ehthumbs.db
+desktop.ini
 
 # =========================
 # Testing / Coverage
@@ -48,6 +62,7 @@ Thumbs.db
 .coverage.*
 htmlcov/
 .pytest_cache/
+.tox/
 
 # =========================
 # Packaging / Build
@@ -58,7 +73,21 @@ dist/
 pip-wheel-metadata/
 
 # =========================
-# Django migrations (optional rule)
+# Celery / Redis (Common in Django)
 # =========================
-# migrations/__pycache__/
-# *.pyc
+celerybeat-schedule
+celerybeat.pid
+*.pid
+
+# =========================
+# Frontend / Node (If using Tailwind, Vue, React, etc.)
+# =========================
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# =========================
+# Translations
+# =========================
+*.mo
+# *.po (Keep these! They are your source translation files)
