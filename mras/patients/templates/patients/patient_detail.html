@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ patient.name }} - Patient Details{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-100 pb-6">
+        <div>
+            <h1 class="text-2xl font-bold text-slate-900 tracking-tight">{{ patient.name }}</h1>
+            <p class="text-sm text-slate-500 mt-1">Full Patient Details</p>
+        </div>
+        <a href="{% url 'patients' %}" class="text-emerald-600 hover:text-emerald-900 text-sm font-medium">Back to Patients List</a>
+    </div>
+
+    <div class="bg-white shadow rounded-lg p-6 border border-slate-100">
+        <dl class="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-6">
+            <div>
+                <dt class="text-sm font-medium text-gray-500">Name</dt>
+                <dd class="mt-1 text-sm text-gray-900">{{ patient.name }}</dd>
+            </div>
+            <div>
+                <dt class="text-sm font-medium text-gray-500">Age</dt>
+                <dd class="mt-1 text-sm text-gray-900">{{ patient.age }}</dd>
+            </div>
+            <div>
+                <dt class="text-sm font-medium text-gray-500">Gender</dt>
+                <dd class="mt-1 text-sm text-gray-900">{{ patient.gender }}</dd>
+            </div>
+            <div>
+                <dt class="text-sm font-medium text-gray-500">Contact</dt>
+                <dd class="mt-1 text-sm text-gray-900">{{ patient.contact }}</dd>
+            </div>
+            <div class="md:col-span-2">
+                <dt class="text-sm font-medium text-gray-500">Address</dt>
+                <dd class="mt-1 text-sm text-gray-900">{{ patient.address }}</dd>
+            </div>
+            <div class="md:col-span-2">
+                <dt class="text-sm font-medium text-gray-500">Medical History</dt>
+                <dd class="mt-1 text-sm text-gray-900 whitespace-pre-wrap">{{ patient.medical_history|default:"None" }}</dd>
+            </div>
+        </dl>
+    </div>
+</div>
+{% endblock %}
