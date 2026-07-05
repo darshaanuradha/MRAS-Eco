@@ -9,7 +9,11 @@
             <h1 class="text-2xl font-bold text-slate-900 tracking-tight">{{ patient.name }}</h1>
             <p class="text-sm text-slate-500 mt-1">Full Patient Details</p>
         </div>
-        <a href="{% url 'patients' %}" class="text-emerald-600 hover:text-emerald-900 text-sm font-medium">Back to Patients List</a>
+        <div class="mt-6 flex gap-4">
+            <a href="{% url 'patients' %}" class="inline-block bg-slate-100 text-slate-700 px-4 py-2 rounded hover:bg-slate-200">Back to Patients</a>
+            <a href="{% url 'patient_update' patient.pk %}" class="inline-block bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700">Edit Patient</a>
+            <a href="{% url 'patient_delete' patient.pk %}" class="inline-block bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">Delete Patient</a>
+        </div>
     </div>
 
     <div class="bg-white shadow rounded-lg p-6 border border-slate-100">

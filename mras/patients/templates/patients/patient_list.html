@@ -11,12 +11,15 @@
         </div>
     </div>
 
-    <!-- Search Form -->
-    <div class="mb-4">
-        <form method="GET" action="{% url 'patients' %}" class="flex gap-2">
-            <input type="text" name="q" value="{{ query }}" placeholder="Search patients by name..." class="border rounded px-4 py-2 w-full md:w-1/2">
+    <!-- Search Form and Add Button -->
+    <div class="mb-4 flex flex-col md:flex-row justify-between gap-4">
+        <form method="GET" action="{% url 'patients' %}" class="flex gap-2 w-full md:w-1/2">
+            <input type="text" name="q" value="{{ query }}" placeholder="Search patients by name..." class="border rounded px-4 py-2 w-full">
             <button type="submit" class="bg-emerald-600 text-white px-4 py-2 rounded hover:bg-emerald-700">Search</button>
         </form>
+        <div>
+            <a href="{% url 'patient_create' %}" class="inline-block bg-emerald-600 text-white px-4 py-2 rounded hover:bg-emerald-700">Add Patient</a>
+        </div>
     </div>
 
     <!-- Patient List -->
@@ -34,8 +37,10 @@
                 <tr>
                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ patient.name }}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ patient.contact }}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
                         <a href="{% url 'patient_detail' patient.pk %}" class="text-emerald-600 hover:text-emerald-900">View Details</a>
+                        <a href="{% url 'patient_update' patient.pk %}" class="text-indigo-600 hover:text-indigo-900">Edit</a>
+                        <a href="{% url 'patient_delete' patient.pk %}" class="text-red-600 hover:text-red-900">Delete</a>
                     </td>
                 </tr>
                 {% empty %}

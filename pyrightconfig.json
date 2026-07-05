@@ -1,0 +1,10 @@
+{
+    "include": [
+        "mras"
+    ],
+    "executionEnvironments": [
+        {
+            "root": "mras"
+        }
+    ]
+}
