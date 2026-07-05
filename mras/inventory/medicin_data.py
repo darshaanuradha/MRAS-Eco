@@ -1,0 +1,104 @@
+from inventory.models import Medicine
+
+Medicine.objects.bulk_create([
+    Medicine(
+        name="Panadol",
+        generic_name="Paracetamol",
+        manufacturer="GSK",
+        dosage_form="Tablet",
+        strength="500mg",
+        min_stock_level=20,
+        max_stock_level=500,
+        unit_cost=15.50
+    ),
+    Medicine(
+        name="Amoxil",
+        generic_name="Amoxicillin",
+        manufacturer="Pfizer",
+        dosage_form="Capsule",
+        strength="250mg",
+        min_stock_level=20,
+        max_stock_level=300,
+        unit_cost=25.00
+    ),
+    Medicine(
+        name="Brufen",
+        generic_name="Ibuprofen",
+        manufacturer="Abbott",
+        dosage_form="Tablet",
+        strength="400mg",
+        min_stock_level=20,
+        max_stock_level=400,
+        unit_cost=18.75
+    ),
+    Medicine(
+        name="Cetrizine",
+        generic_name="Cetirizine",
+        manufacturer="Hemas",
+        dosage_form="Tablet",
+        strength="10mg",
+        min_stock_level=20,
+        max_stock_level=200,
+        unit_cost=5.00
+    ),
+    Medicine(
+        name="Ventolin",
+        generic_name="Salbutamol",
+        manufacturer="GSK",
+        dosage_form="Inhaler",
+        strength="100mcg",
+        min_stock_level=10,
+        max_stock_level=100,
+        unit_cost=1200.00
+    ),
+    Medicine(
+        name="ORS",
+        generic_name="Oral Rehydration Salts",
+        manufacturer="Local Pharma",
+        dosage_form="Powder",
+        strength="1 sachet",
+        min_stock_level=50,
+        max_stock_level=1000,
+        unit_cost=10.00
+    ),
+    Medicine(
+        name="Metformin",
+        generic_name="Metformin",
+        manufacturer="Sun Pharma",
+        dosage_form="Tablet",
+        strength="500mg",
+        min_stock_level=30,
+        max_stock_level=600,
+        unit_cost=8.50
+    ),
+    Medicine(
+        name="Aspirin",
+        generic_name="Acetylsalicylic Acid",
+        manufacturer="Bayer",
+        dosage_form="Tablet",
+        strength="75mg",
+        min_stock_level=20,
+        max_stock_level=500,
+        unit_cost=3.25
+    ),
+    Medicine(
+        name="Loratadine",
+        generic_name="Loratadine",
+        manufacturer="Hemas",
+        dosage_form="Tablet",
+        strength="10mg",
+        min_stock_level=20,
+        max_stock_level=300,
+        unit_cost=6.00
+    ),
+    Medicine(
+        name="Azithromycin",
+        generic_name="Azithromycin",
+        manufacturer="Pfizer",
+        dosage_form="Tablet",
+        strength="500mg",
+        min_stock_level=15,
+        max_stock_level=250,
+        unit_cost=45.00
+    ),
+])
