@@ -18,3 +18,21 @@ class Medicine(models.Model):
 
     def __str__(self):
         return self.name    
+    
+
+
+class Inventory(models.Model):
+    medicine = models.ForeignKey(Medicine, on_delete=models.CASCADE)
+    batch_number = models.CharField(max_length=50, unique=True)
+    expiry_date = models.DateField()
+    current_stock = models.PositiveIntegerField()
+    date_added = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        indexes = [
+            models.Index(fields=['batch_number']),
+            models.Index(fields=['expiry_date']),
+        ]
+
+    def __str__(self):
+        return f"{self.medicine.name} - Batch: {self.batch_number}"

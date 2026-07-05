@@ -1,13 +1,26 @@
 from django.shortcuts import get_object_or_404, render, redirect
-
-from .forms import MedicineForm
-from .models import Medicine
-
-# Create your views here.
-
+from django.db.models import Sum
+from .forms import MedicineForm, InventoryForm
+from .models import Medicine, Inventory
+from datetime import timedelta
+from django.utils import timezone
 def inventory_view(request):
-    medicines = Medicine.objects.all().order_by('name')
+    # Annotate total stock from related Inventory batches
+    medicines = Medicine.objects.annotate(
+        total_stock=Sum('inventory__current_stock')
+    ).order_by('name')
     return render(request, 'inventory.html', {'medicines': medicines})
+
+def stock_view(request, pk):
+    medicine = get_object_or_404(Medicine, pk=pk)
+    batches = Inventory.objects.filter(medicine=medicine).order_by('-date_added')
+    today = timezone.now().date()
+    return render(request, 'stock_view.html', {
+        'medicine': medicine,
+        'batches': batches,
+        'today': today
+    })
+
 
 def add_medicine(request):
     if request.method == "POST":
@@ -36,3 +49,13 @@ def delete_medicine(request, pk):
         medicine.delete()
         return redirect('inventory')
     return render(request, 'confirm_delete.html', {'medicine': medicine})
+
+def add_inventory(request):
+    if request.method == "POST":
+        form = InventoryForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('inventory')
+    else:
+        form = InventoryForm()
+    return render(request, 'add_inventory.html', {'form': form})
