@@ -219,46 +219,45 @@
         
     </main>
 
-    <!-- UI INTERACTION SCRIPTS -->
+   <!-- UI INTERACTION SCRIPTS -->
     {% if user.is_authenticated %}
     <script>
-        // Sidebar Mobile Toggle
-        const sidebar = document.getElementById('sidebar');
-        const overlay = document.getElementById('mobile-overlay');
-        let isSidebarOpen = false;
+        // ... (Keep your existing sidebar toggle code here) ...
 
-        function toggleSidebar() {
-            isSidebarOpen = !isSidebarOpen;
-            if (isSidebarOpen) {
-                sidebar.classList.remove('-translate-x-full');
-                overlay.classList.remove('hidden');
-                setTimeout(() => {
-                    overlay.classList.remove('opacity-0');
-                    overlay.classList.add('opacity-100');
-                }, 10);
-            } else {
-                sidebar.classList.add('-translate-x-full');
-                overlay.classList.remove('opacity-100');
-                overlay.classList.add('opacity-0');
-                setTimeout(() => {
-                    overlay.classList.add('hidden');
-                }, 300);
-            }
-        }
-
-        // Notification Dropdown Toggle Logic
+        // Notification Dropdown & Badge Logic
         const notifBtn = document.getElementById('notification-button');
         const notifDropdown = document.getElementById('notification-dropdown');
+        const notifBadge = document.getElementById('notif-badge');
 
         if (notifBtn && notifDropdown) {
+            // 1. Check if badge should be shown on page load
+            const currentCount = parseInt(notifBtn.getAttribute('data-notif-count')) || 0;
+            const acknowledgedCount = parseInt(localStorage.getItem('acknowledged_notif_count')) || 0;
+
+            // Only show the red badge if there are notifications AND the count has changed since last viewed
+            if (currentCount > 0 && currentCount !== acknowledgedCount) {
+                notifBadge.classList.remove('hidden');
+                notifBadge.classList.add('inline-flex'); // Tailwind display class
+            }
+
+            // 2. Handle Clicking the Bell
             notifBtn.addEventListener('click', function(e) {
                 e.stopPropagation();
+                
+                // Toggle Dropdown
                 if (notifDropdown.classList.contains('hidden')) {
                     notifDropdown.classList.remove('hidden');
                     setTimeout(() => {
                         notifDropdown.classList.remove('opacity-0', 'scale-95');
                         notifDropdown.classList.add('opacity-100', 'scale-100');
                     }, 10);
+                    
+                    // Acknowledge notifications and hide the badge instantly
+                    if (currentCount > 0) {
+                        localStorage.setItem('acknowledged_notif_count', currentCount);
+                        notifBadge.classList.remove('inline-flex');
+                        notifBadge.classList.add('hidden');
+                    }
                 } else {
                     notifDropdown.classList.remove('opacity-100', 'scale-100');
                     notifDropdown.classList.add('opacity-0', 'scale-95');
