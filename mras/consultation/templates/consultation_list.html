@@ -1,49 +1,51 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="header-section mb-4 d-flex justify-content-between align-items-center">
+<div class="d-flex justify-content-between align-items-center mb-4">
     <div>
-        <h2>Consultations</h2>
-        <p class="text-muted">Manage patient consultations, diagnoses, and prescriptions.</p>
+        <h3 class="fw-bold mb-1" style="color: #111827;">Consultations</h3>
+        <p class="text-muted mb-0 small">Manage and view all patient consultations and prescriptions.</p>
     </div>
-    <a href="{% url 'consultation_create' %}" class="btn btn-success" style="background-color: #0b9366; border: none;">
+    <a href="{% url 'consultation_create' %}" class="btn text-white shadow-sm" style="background-color: #0b9366; border: none; font-weight: 500;">
         + New Consultation
     </a>
 </div>
 
-<div class="card shadow-sm border-0">
-    <div class="card-body p-0">
-        <table class="table table-hover mb-0">
-            <thead class="bg-light">
+<div class="card border-0 shadow-sm" style="border-radius: 8px; overflow: hidden;">
+    <div class="card-body p-0 table-responsive">
+        <table class="table table-hover mb-0 align-middle">
+            <thead style="background-color: #f9fafb;">
                 <tr>
-                    <th class="px-4 py-3 border-0 text-muted small fw-bold text-uppercase">Date</th>
-                    <th class="px-4 py-3 border-0 text-muted small fw-bold text-uppercase">Patient</th>
-                    <th class="px-4 py-3 border-0 text-muted small fw-bold text-uppercase">Doctor</th>
-                    <th class="px-4 py-3 border-0 text-muted small fw-bold text-uppercase">Status</th>
-                    <th class="px-4 py-3 border-0 text-muted small fw-bold text-uppercase">Actions</th>
+                    <th class="px-4 py-3 border-0 text-muted" style="font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">Date</th>
+                    <th class="px-4 py-3 border-0 text-muted" style="font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">Patient</th>
+                    <th class="px-4 py-3 border-0 text-muted" style="font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">Doctor</th>
+                    <th class="px-4 py-3 border-0 text-muted" style="font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">Status</th>
+                    <th class="px-4 py-3 border-0 text-muted text-end" style="font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">Actions</th>
                 </tr>
             </thead>
             <tbody>
                 {% for consultation in consultations %}
-                <tr>
-                    <td class="px-4 py-3">{{ consultation.consultation_date|date:"M d, Y H:i" }}</td>
-                    <td class="px-4 py-3">{{ consultation.patient.full_name }}</td>
-                    <td class="px-4 py-3">{{ consultation.doctor.full_name }}</td>
+                <tr style="border-bottom: 1px solid #f3f4f6;">
+                    <td class="px-4 py-3 text-secondary small">{{ consultation.consultation_date|date:"M d, Y" }}</td>
+                    <td class="px-4 py-3 fw-bold" style="color: #1f2937; font-size: 0.9rem;">{{ consultation.patient.full_name }}</td>
+                    <td class="px-4 py-3 text-secondary small">{{ consultation.doctor.full_name }}</td>
                     <td class="px-4 py-3">
-                        <span class="badge rounded-pill 
-                            {% if consultation.status == 'Completed' %}bg-success text-light
-                            {% elif consultation.status == 'Pending' %}bg-warning text-dark
-                            {% else %}bg-danger text-light{% endif %}">
+                        <span class="badge rounded-pill px-3 py-1" style="font-weight: 500; font-size: 0.75rem;
+                            {% if consultation.status == 'Completed' %}background-color: #d1fae5; color: #065f46;
+                            {% elif consultation.status == 'Pending' %}background-color: #fef3c7; color: #92400e;
+                            {% else %}background-color: #fee2e2; color: #991b1b;{% endif %}">
                             {{ consultation.status }}
                         </span>
                     </td>
-                    <td class="px-4 py-3">
-                        <a href="{% url 'consultation_edit' consultation.id %}" class="text-primary text-decoration-none me-2">Edit/View</a>
+                    <td class="px-4 py-3 text-end">
+                        <a href="{% url 'consultation_edit' consultation.id %}" style="color: #0b9366; font-size: 0.85rem; font-weight: 500; text-decoration: none;" class="me-3">Edit</a>
                     </td>
                 </tr>
                 {% empty %}
                 <tr>
-                    <td colspan="5" class="text-center py-4 text-muted">No consultations found.</td>
+                    <td colspan="5" class="text-center py-5 text-muted">
+                        No consultations found. Click "New Consultation" to begin.
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>

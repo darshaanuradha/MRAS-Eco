@@ -36,3 +36,19 @@ class Inventory(models.Model):
 
     def __str__(self):
         return f"{self.medicine.name} - Batch: {self.batch_number}"
+    
+
+class PrescriptionItem(models.Model):
+    # Using 'consultation.Consultation' as a string prevents circular import crashes
+    consultation = models.ForeignKey('consultation.Consultation', on_delete=models.CASCADE)
+    medicine = models.ForeignKey('Medicine', on_delete=models.RESTRICT)
+    
+    quantity = models.PositiveIntegerField()
+    dosage_instructions = models.CharField(max_length=255)
+    duration_days = models.IntegerField(null=True, blank=True)
+
+    class Meta:
+        db_table = 'inventory_prescriptionitem' 
+
+    def __str__(self):
+        return f"{self.quantity}x {self.medicine.name} for Consultation #{self.consultation_id}"
