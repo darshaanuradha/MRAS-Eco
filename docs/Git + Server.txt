@@ -1,0 +1,37 @@
+
+_________________
+**other branch check
+
+git fetch origin
+git branch -r
+git checkout dev_Shakila_Patient
+git checkout -b dev_Shakila_Patient origin/dev_Shakila_Patient
+
+python manage.py migrate
+python manage.py runserver
+_____________________
+**create new branch and checkout
+
+git checkout -b feature/login
+_After making your changes and committing:
+
+git add .
+git commit -m "Add login feature"
+git push -u origin feature/login
+
+_The -u option sets the upstream branch, so future pushes can simply use:
+git push
+
+____________________________
+ **droplet
+ssh root@165.245.177.229
+Uovt@2026_Python
+./deploy.sh
+___________________________
+pip install --upgrade django
+pip freeze > requirements.txt
+pip install -r requirements.txt
+venv\Scripts\activate  
+
+
+

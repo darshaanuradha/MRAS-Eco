@@ -1,0 +1,80 @@
+-- ==============================================================================
+-- MRAS Eco - Complete MySQL Database Schema
+-- Includes Django Authentication and Core Business Modules
+-- ==============================================================================
+
+-- 0. DJANGO AUTHENTICATION MODULE (Base User)
+-- Note: Django creates this automatically. Included here for ER completeness.
+CREATE TABLE auth_user (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(150) NOT NULL UNIQUE,
+    password VARCHAR(128) NOT NULL,
+    first_name VARCHAR(150) NOT NULL,
+    last_name VARCHAR(150) NOT NULL,
+    email VARCHAR(254) NOT NULL,
+    is_staff BOOLEAN NOT NULL DEFAULT FALSE,
+    is_active BOOLEAN NOT NULL DEFAULT TRUE,
+    date_joined DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 1. DOCTORS MODULE
+CREATE TABLE doctors_doctor (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL UNIQUE, 
+    full_name VARCHAR(255) NOT NULL,
+    specialization VARCHAR(150) NOT NULL,
+    phone_number VARCHAR(20) NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+);
+
+-- 2. PATIENTS MODULE
+CREATE TABLE patients_patient (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    employee_id VARCHAR(50) NOT NULL UNIQUE,
+    full_name VARCHAR(255) NOT NULL,
+    department VARCHAR(100) NOT NULL,
+    date_of_birth DATE NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+-- 3. CONSULTATION MODULE (1:N from Patient and Doctor)
+CREATE TABLE consultation_consultation (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    patient_id INT NOT NULL,
+    doctor_id INT NOT NULL,
+    consultation_datetime DATETIME DEFAULT CURRENT_TIMESTAMP,
+    diagnosis TEXT NOT NULL,
+    FOREIGN KEY (patient_id) REFERENCES patients_patient(id) ON DELETE CASCADE,
+    FOREIGN KEY (doctor_id) REFERENCES doctors_doctor(id) ON DELETE CASCADE
+);
+
+-- 4. INVENTORY & PHARMACY MODULE
+CREATE TABLE inventory_medicine (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL UNIQUE,
+    generic_name VARCHAR(100) NOT NULL,
+    min_stock_level INT NOT NULL DEFAULT 20
+);
+
+-- (1:N from Medicine)
+CREATE TABLE inventory_inventory (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    medicine_id INT NOT NULL,
+    batch_number VARCHAR(50) NOT NULL UNIQUE,
+    expiry_date DATE NOT NULL,
+    current_stock INT UNSIGNED NOT NULL, -- UNSIGNED enforces >= 0
+    FOREIGN KEY (medicine_id) REFERENCES inventory_medicine(id) ON DELETE CASCADE
+);
+
+-- (1:N from Consultation and Medicine)
+CREATE TABLE inventory_prescriptionitem (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    consultation_id INT NOT NULL,
+    medicine_id INT NOT NULL,
+    quantity INT UNSIGNED NOT NULL,
+    dosage_instructions VARCHAR(255) NOT NULL,
+    FOREIGN KEY (consultation_id) REFERENCES consultation_consultation(id) ON DELETE CASCADE,
+    FOREIGN KEY (medicine_id) REFERENCES inventory_medicine(id) ON DELETE CASCADE
+);

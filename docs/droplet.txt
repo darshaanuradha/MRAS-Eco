@@ -1,0 +1,122 @@
+ssh root@165.245.177.229
+Uovt@2026_Python
+
+LEVEL 1 (MANUAL UPDATE – MOST COMMON)
+
+SSH into your droplet:
+
+	ssh root@165.245.177.229
+
+Go to project:
+
+	cd /home/MRAS-Eco
+
+Pull latest code:
+
+	git pull origin main
+
+Activate venv:
+
+	source mras/venv/bin/activate
+
+Install dependencies (if changed):
+
+	pip install -r requirements.txt
+
+Run migrations (if DB changed):
+
+	python manage.py migrate
+
+Collect static (if frontend changed):
+
+	python mras/manage.py collectstatic --noinput
+
+Restart services:
+
+	systemctl restart mras
+	systemctl restart nginx
+
+
+
+LEVEL 2 (ONE-COMMAND DEPLOY SCRIPT)
+
+Create deploy script:
+
+nano deploy.sh
+
+Paste:
+
+#!/bin/bash
+
+cd /home/MRAS-Eco
+
+git pull origin main
+
+cd mras
+
+source venv/bin/activate
+
+pip install -r requirements.txt
+
+python manage.py migrate
+python manage.py collectstatic --noinput
+
+systemctl restart mras
+systemctl restart nginx
+
+echo "DEPLOY COMPLETE"
+
+Make executable:
+
+chmod +x deploy.sh
+
+Now update anytime with:
+
+./deploy.sh
+
+
+
+🤖 LEVEL 3 (REAL DEVOPS): GITHUB ACTIONS CI/CD
+
+This is what real production systems use.
+
+Flow:
+GitHub push
+   ↓
+GitHub Actions runs
+   ↓
+SSH into droplet
+   ↓
+Auto pull + restart
+Example GitHub Actions workflow
+
+Create:
+
+.github/workflows/deploy.yml
+name: Deploy Django to VPS
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.HOST }}
+          username: root
+          password: ${{ secrets.PASSWORD }}
+          script: |
+            cd /home/MRAS-Eco
+            git pull origin main
+            source mras/venv/bin/activate
+            pip install -r requirements.txt
+            python mras/manage.py migrate
+            python mras/manage.py collectstatic --noinput
+            systemctl restart mras
+            systemctl restart nginx
