@@ -1,4 +1,5 @@
 from django.db import models
+
 class Medicine(models.Model):
     name = models.CharField(max_length=100, unique=True)
     generic_name = models.CharField(max_length=100)
@@ -18,8 +19,6 @@ class Medicine(models.Model):
 
     def __str__(self):
         return self.name    
-    
-
 
 class Inventory(models.Model):
     medicine = models.ForeignKey(Medicine, on_delete=models.CASCADE)
@@ -37,9 +36,7 @@ class Inventory(models.Model):
     def __str__(self):
         return f"{self.medicine.name} - Batch: {self.batch_number}"
     
-
 class PrescriptionItem(models.Model):
-    # Using 'consultation.Consultation' as a string prevents circular import crashes
     consultation = models.ForeignKey('consultation.Consultation', on_delete=models.CASCADE)
     medicine = models.ForeignKey('Medicine', on_delete=models.RESTRICT)
     
@@ -51,4 +48,16 @@ class PrescriptionItem(models.Model):
         db_table = 'inventory_prescriptionitem' 
 
     def __str__(self):
-        return f"{self.quantity}x {self.medicine.name} for Consultation #{self.consultation_id}"
+        return f"{self.quantity}x {self.medicine.name}"
+
+# --- NEW MODEL TO TRACK BATCH ALLOCATIONS ---
+class PrescriptionAllocation(models.Model):
+    prescription_item = models.ForeignKey(PrescriptionItem, on_delete=models.CASCADE, related_name='allocations')
+    inventory_batch = models.ForeignKey(Inventory, on_delete=models.RESTRICT)
+    quantity = models.PositiveIntegerField()
+
+    class Meta:
+        db_table = 'inventory_prescriptionallocation'
+
+    def __str__(self):
+        return f"{self.quantity} units from {self.inventory_batch.batch_number}"
