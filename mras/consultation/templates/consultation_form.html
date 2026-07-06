@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="mb-4">
+    <h2>{% if object %}Edit Consultation{% else %}New Consultation{% endif %}</h2>
+</div>
+
+<form method="post" action="" class="card shadow-sm border-0 p-4">
+    {% csrf_token %}
+    
+    <!-- Consultation Main Form -->
+    <h5 class="mb-3 text-primary">Consultation Details</h5>
+    <div class="row g-3 mb-4">
+        <div class="col-md-4">
+            <label class="form-label text-muted small">Patient</label>
+            {{ form.patient }}
+        </div>
+        <div class="col-md-4">
+            <label class="form-label text-muted small">Doctor</label>
+            {{ form.doctor }}
+        </div>
+        <div class="col-md-4">
+            <label class="form-label text-muted small">Status</label>
+            {{ form.status }}
+        </div>
+        <div class="col-md-12">
+            <label class="form-label text-muted small">Diagnosis</label>
+            {{ form.diagnosis }}
+        </div>
+        <div class="col-md-12">
+            <label class="form-label text-muted small">Notes (Optional)</label>
+            {{ form.notes }}
+        </div>
+    </div>
+
+    <hr class="mb-4">
+
+    <!-- Inline Formset for Prescriptions -->
+    <h5 class="mb-3 text-primary">Prescriptions</h5>
+    {{ prescriptions.management_form }}
+    
+    <div id="prescription-form-list">
+        {% for form in prescriptions %}
+        <div class="row g-2 mb-3 align-items-end prescription-row">
+            {{ form.id }}
+            <div class="col-md-4">
+                <label class="form-label text-muted small">Medicine</label>
+                {{ form.medicine }}
+            </div>
+            <div class="col-md-2">
+                <label class="form-label text-muted small">Quantity</label>
+                {{ form.quantity }}
+            </div>
+            <div class="col-md-4">
+                <label class="form-label text-muted small">Instructions</label>
+                {{ form.dosage_instructions }}
+            </div>
+            <div class="col-md-2">
+                <label class="form-label text-muted small">Days</label>
+                {{ form.duration_days }}
+            </div>
+            <!-- Django Formset Delete Checkbox -->
+            {% if prescriptions.can_delete %}
+                <div class="col-md-12 text-end mt-1">
+                    <label class="text-danger small">{{ form.DELETE }} Delete Item</label>
+                </div>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Actions -->
+    <div class="d-flex justify-content-end align-items-center mt-4">
+        <a href="{% url 'consultation_list' %}" class="text-muted text-decoration-none me-4">Cancel</a>
+        <button type="submit" class="btn text-white px-4 py-2" style="background-color: #4f46e5; border: none; border-radius: 6px;">
+            Save Consultation
+        </button>
+    </div>
+</form>
+{% endblock %}
