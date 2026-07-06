@@ -14,7 +14,9 @@ class Consultation(models.Model):
     consultation_date = models.DateTimeField(auto_now_add=True)
     diagnosis = models.TextField()
     notes = models.TextField(blank=True, null=True)
-    status = models.CharField(max_length=15, choices=STATUS_CHOICES, default='Completed')
+    
+    # Updated: Now defaults to 'Pending' when a new consultation is created
+    status = models.CharField(max_length=15, choices=STATUS_CHOICES, default='Pending')
 
     class Meta:
         db_table = 'consultation_consultation'

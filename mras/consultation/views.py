@@ -8,20 +8,11 @@ from inventory.models import Inventory, PrescriptionAllocation
 
 # --- FEFO Stock Deduction Logic ---
 def dispense_stock(consultation):
-    """
-    Deducts stock automatically based on Earliest Expiry First.
-    Only processes items that haven't been deducted yet.
-    """
     for item in consultation.prescriptionitem_set.all():
-        # IMPORTANT: This prevents double-deduction. 
-        # If the consultation is already 'Completed' and the doctor just edits a text note,
-        # it skips medicines that were already deducted.
         if item.allocations.exists():
             continue
 
         remaining_qty = item.quantity
-        
-        # Fetch batches with stock, ordered by closest expiry date (FEFO)
         available_batches = Inventory.objects.filter(
             medicine=item.medicine,
             current_stock__gt=0
@@ -33,11 +24,9 @@ def dispense_stock(consultation):
             
             take_qty = min(remaining_qty, batch.current_stock)
             
-            # Deduct from Inventory table
             batch.current_stock -= take_qty
             batch.save()
             
-            # Record the transaction linking the prescription to the exact inventory batch
             PrescriptionAllocation.objects.create(
                 prescription_item=item,
                 inventory_batch=batch,
@@ -46,7 +35,6 @@ def dispense_stock(consultation):
             
             remaining_qty -= take_qty
 
-        # If we loop through all batches and still need more, block the save.
         if remaining_qty > 0:
             raise ValueError(f"Insufficient stock for {item.medicine.name}. Short by {remaining_qty} units.")
 
@@ -80,20 +68,25 @@ class ConsultationCreateView(CreateView):
         
         try:
             with transaction.atomic():
-                self.object = form.save()
-                if prescriptions.is_valid():
+                # Check if BOTH the main form and the prescriptions have enough stock
+                if form.is_valid() and prescriptions.is_valid():
+                    self.object = form.save()
                     prescriptions.instance = self.object
                     prescriptions.save()
                     
-                    # TRIGGER: Only deduct stock if creating a brand new 'Completed' consultation
                     if self.object.status == 'Completed':
                         dispense_stock(self.object)
+                        
+                    messages.success(self.request, "Consultation saved successfully.")
+                    return super().form_valid(form)
                 else:
+                    # If stock check fails, extract the formset errors and display them as messages
+                    for error_dict in prescriptions.errors:
+                        for field, errors in error_dict.items():
+                            for error in errors:
+                                messages.error(self.request, error)
                     return self.form_invalid(form)
                     
-            messages.success(self.request, "Consultation saved successfully.")
-            return super().form_valid(form)
-            
         except ValueError as e:
             messages.error(self.request, str(e))
             return self.render_to_response(self.get_context_data(form=form))
@@ -119,22 +112,24 @@ class ConsultationUpdateView(UpdateView):
         
         try:
             with transaction.atomic():
-                self.object = form.save()
-                if prescriptions.is_valid():
+                if form.is_valid() and prescriptions.is_valid():
+                    self.object = form.save()
                     prescriptions.instance = self.object
                     prescriptions.save()
                     
-                    # TRIGGER: If user changes status from 'Pending' to 'Completed', this runs.
                     if self.object.status == 'Completed':
                         dispense_stock(self.object)
+                        
+                    messages.success(self.request, "Consultation updated successfully.")
+                    return super().form_valid(form)
                 else:
+                    for error_dict in prescriptions.errors:
+                        for field, errors in error_dict.items():
+                            for error in errors:
+                                messages.error(self.request, error)
                     return self.form_invalid(form)
                     
-            messages.success(self.request, "Consultation updated successfully.")
-            return super().form_valid(form)
-            
         except ValueError as e:
-            # If there isn't enough stock, it shows an error message and prevents saving
             messages.error(self.request, str(e))
             return self.render_to_response(self.get_context_data(form=form))
 
