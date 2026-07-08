@@ -18,7 +18,7 @@ def home(request):
     today = timezone.now().date()
     
     # Calculate real-time metrics
-    patients_today = Patient.objects.filter(created_at__date=today).count()
+    patients_total = Patient.objects.count()
     pending_consultations = Consultation.objects.filter(status='Pending').count()
     active_doctors = Doctor.objects.filter(is_active=True).count()
     
@@ -35,7 +35,7 @@ def home(request):
     ).select_related('patient', 'doctor').order_by('-consultation_date')[:5]
 
     context = {
-        'patients_today': patients_today,
+        'patients_total': patients_total,
         'pending_consultations': pending_consultations,
         'active_doctors': active_doctors,
         'low_stock_count': low_stock_count,
