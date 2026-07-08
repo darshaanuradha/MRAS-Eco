@@ -3,11 +3,45 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.utils import timezone
 
+from patients.models import Patient
+from consultation.models import Consultation
+from inventory.models import Medicine
+from doctors.models import Doctor
+
+
+from django.db.models import Sum, F
 
 @login_required(login_url='login')
 def home(request):
-    return render(request, 'home.html')
+    today = timezone.now().date()
+    
+    # Calculate real-time metrics
+    patients_today = Patient.objects.filter(created_at__date=today).count()
+    pending_consultations = Consultation.objects.filter(status='Pending').count()
+    active_doctors = Doctor.objects.filter(is_active=True).count()
+    
+    # Calculate low stock count
+    low_stock_medicines = Medicine.objects.annotate(
+        total_stock=Sum('inventory__current_stock')
+    ).filter(total_stock__lt=F('min_stock_level'))
+    
+    low_stock_count = low_stock_medicines.count()
+    
+    # Get 5 most recent pending consultations
+    recent_consultations = Consultation.objects.filter(
+        status='Pending'
+    ).select_related('patient', 'doctor').order_by('-consultation_date')[:5]
+
+    context = {
+        'patients_today': patients_today,
+        'pending_consultations': pending_consultations,
+        'active_doctors': active_doctors,
+        'low_stock_count': low_stock_count,
+        'recent_consultations': recent_consultations,
+    }
+    return render(request, 'home.html', context)
 
 # REGISTER
 def register(request):
