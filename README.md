@@ -465,6 +465,20 @@ Install dependencies:
 pip install -r requirements.txt
 ```
 
+### Step 3.1: Set Up the `.env` File
+
+The project reads environment variables from a `.env` file in the repository root, next to `README.md`.
+
+```bash
+# Windows PowerShell
+Copy-Item .env.example .env
+
+# macOS/Linux
+cp .env.example .env
+```
+
+Update the values in `.env` before running the app.
+
 ### Step 4: Navigate to Django Project
 
 ```bash
@@ -595,45 +609,21 @@ MEDIA_URL = 'media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 ```
 
-### Environment Variables (Production)
+### Managing the `.env` File
 
-Create `.env` file (never commit to git):
+Keep the real `.env` file out of version control. Use `.env.example` as the template and copy it to `.env` for local development or deployment.
+
 ```bash
-# .env
-DEBUG=False
-SECRET_KEY=django-insecure-your-secret-key-here
-DB_ENGINE=django.db.backends.mysql
-DB_NAME=mars
-DB_USER=root
-DB_PASSWORD=secure_password_123
-DB_HOST=localhost
-DB_PORT=3306
-ALLOWED_HOSTS=165.245.177.229,yourdomain.com
+# Example .env values used by mras/settings.py
+DEBUG=True
+SECRET_KEY=django-insecure-change-this-value
+DATABASE_NAME=mars
+DATABASE_USER=root
+DATABASE_PASSWORD=
+ALLOWED_HOSTS=127.0.0.1,localhost
 ```
 
-Load in `settings.py`:
-```python
-from decouple import config, Csv
-
-DEBUG = config('DEBUG', default=False, cast=bool)
-SECRET_KEY = config('SECRET_KEY')
-DATABASES = {
-    'default': {
-        'ENGINE': config('DB_ENGINE'),
-        'NAME': config('DB_NAME'),
-        'USER': config('DB_USER'),
-        'PASSWORD': config('DB_PASSWORD'),
-        'HOST': config('DB_HOST'),
-        'PORT': config('DB_PORT'),
-    }
-}
-ALLOWED_HOSTS = config('ALLOWED_HOSTS', cast=Csv())
-```
-
-Install `python-decouple`:
-```bash
-pip install python-decouple
-```
+The settings file loads these values automatically from the repository root, so you only need to edit `.env` when credentials or hosts change.
 
 ---
 
