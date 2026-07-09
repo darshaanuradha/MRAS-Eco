@@ -131,10 +131,13 @@
                         <div id="notification-dropdown" class="hidden absolute right-0 mt-2 w-80 sm:w-96 bg-white rounded-xl shadow-xl ring-1 ring-slate-900/5 z-50 overflow-hidden transform opacity-0 scale-95 transition-all duration-200">
                             <div class="px-4 py-3 bg-slate-50 border-b border-slate-100 flex justify-between items-center">
                                 <h3 class="text-sm font-bold text-slate-900">Notifications</h3>
-                                <span class="text-xs font-medium text-slate-500 bg-slate-200/50 px-2 py-1 rounded-full">{{ notif_count|default:"0" }} New</span>
+                                <div class="flex items-center gap-3">
+                                    <button type="button" id="mark-all-read" class="text-xs text-emerald-600 hover:text-emerald-700 font-medium">Mark all as read</button>
+                                    <span class="text-xs font-medium text-slate-500 bg-slate-200/50 px-2 py-1 rounded-full">{{ notif_count|default:"0" }} New</span>
+                                </div>
                             </div>
                             
-                            <div class="max-h-[28rem] overflow-y-auto divide-y divide-slate-50">
+                            <div id="notification-list" class="max-h-[28rem] overflow-y-auto divide-y divide-slate-50">
                                 {% if notif_count == 0 %}
                                     <div class="p-8 text-center flex flex-col items-center justify-center text-slate-500">
                                         <div class="w-12 h-12 bg-slate-100 rounded-full flex items-center justify-center mb-3">
@@ -145,7 +148,7 @@
                                 {% endif %}
 
                                 {% for batch in expired_alerts %}
-                                    <div class="p-4 hover:bg-slate-50 transition-colors flex gap-3 items-start border-l-4 border-l-red-500">
+                                    <a href="{% url 'stock_view' batch.medicine.pk %}" class="block p-4 hover:bg-slate-50 transition-colors flex gap-3 items-start border-l-4 border-l-red-500">
                                         <div class="text-red-500 bg-red-50 p-1.5 rounded-full shrink-0 mt-0.5">
                                             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
                                         </div>
@@ -153,11 +156,11 @@
                                             <p class="text-sm font-bold text-slate-900">Batch Expired</p>
                                             <p class="text-xs text-slate-600 mt-1 leading-relaxed"><span class="font-semibold text-slate-800">{{ batch.medicine.name }}</span> (Batch: {{ batch.batch_number }}) expired on <span class="font-semibold text-red-600">{{ batch.expiry_date }}</span>. Must dispose of {{ batch.current_stock }} units.</p>
                                         </div>
-                                    </div>
+                                    </a>
                                 {% endfor %}
 
                                 {% for med in low_stock_alerts %}
-                                    <div class="p-4 hover:bg-slate-50 transition-colors flex gap-3 items-start border-l-4 border-l-amber-400">
+                                    <a href="{% url 'stock_view' med.pk %}" class="block p-4 hover:bg-slate-50 transition-colors flex gap-3 items-start border-l-4 border-l-amber-400">
                                         <div class="text-amber-500 bg-amber-50 p-1.5 rounded-full shrink-0 mt-0.5">
                                             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 17h8m0 0V9m0 8l-8-8-4 4-6-6"></path></svg>
                                         </div>
@@ -165,11 +168,11 @@
                                             <p class="text-sm font-bold text-slate-900">Low Stock Alert</p>
                                             <p class="text-xs text-slate-600 mt-1 leading-relaxed"><span class="font-semibold text-slate-800">{{ med.name }}</span> is running low. <span class="font-semibold text-amber-600">{{ med.total_stock }} units</span> remaining.</p>
                                         </div>
-                                    </div>
+                                    </a>
                                 {% endfor %}
 
                                 {% for batch in expiring_alerts %}
-                                    <div class="p-4 hover:bg-slate-50 transition-colors flex gap-3 items-start border-l-4 border-l-blue-500">
+                                    <a href="{% url 'stock_view' batch.medicine.pk %}" class="block p-4 hover:bg-slate-50 transition-colors flex gap-3 items-start border-l-4 border-l-blue-500">
                                         <div class="text-blue-500 bg-blue-50 p-1.5 rounded-full shrink-0 mt-0.5">
                                             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                                         </div>
@@ -177,7 +180,7 @@
                                             <p class="text-sm font-bold text-slate-900">Expiring Soon</p>
                                             <p class="text-xs text-slate-600 mt-1 leading-relaxed"><span class="font-semibold text-slate-800">{{ batch.medicine.name }}</span> (Batch: {{ batch.batch_number }}) will expire on <span class="font-semibold text-blue-600">{{ batch.expiry_date }}</span>.</p>
                                         </div>
-                                    </div>
+                                    </a>
                                 {% endfor %}
                             </div>
                         </div>
@@ -280,6 +283,28 @@
                     }, 200);
                 }
             });
+            
+            // Mark all as read logic
+            const markAllReadBtn = document.getElementById('mark-all-read');
+            const notifList = document.getElementById('notification-list');
+            if (markAllReadBtn && notifList) {
+                markAllReadBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    // Just update UI to show empty state
+                    notifList.innerHTML = `
+                        <div class="p-8 text-center flex flex-col items-center justify-center text-slate-500">
+                            <div class="w-12 h-12 bg-slate-100 rounded-full flex items-center justify-center mb-3">
+                                <svg class="w-6 h-6 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                            </div>
+                            <p class="text-sm font-medium">You're all caught up!</p>
+                        </div>
+                    `;
+                    // Hide the badge as well
+                    localStorage.setItem('acknowledged_notif_count', currentCount);
+                    notifBadge.classList.remove('inline-flex');
+                    notifBadge.classList.add('hidden');
+                });
+            }
         }
     </script>
     {% endif %}

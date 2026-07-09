@@ -20,9 +20,8 @@ class MedicineForm(forms.ModelForm):
 class InventoryForm(forms.ModelForm):
     class Meta:
         model = Inventory
-        fields = ['medicine', 'batch_number', 'expiry_date', 'current_stock']
+        fields = ['batch_number', 'expiry_date', 'current_stock']
         widgets = {
-            'medicine': forms.Select(attrs={'class': 'w-full px-3 py-2 border rounded-lg'}),
             'batch_number': forms.TextInput(attrs={'class': 'w-full px-3 py-2 border rounded-lg'}),
             'expiry_date': forms.DateInput(attrs={'class': 'w-full px-3 py-2 border rounded-lg', 'type': 'date'}),
             'current_stock': forms.NumberInput(attrs={'class': 'w-full px-3 py-2 border rounded-lg'}),

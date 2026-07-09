@@ -11,17 +11,6 @@ def inventory_view(request):
     ).order_by('name')
     return render(request, 'inventory.html', {'medicines': medicines})
 
-def stock_view(request, pk):
-    medicine = get_object_or_404(Medicine, pk=pk)
-    batches = Inventory.objects.filter(medicine=medicine).order_by('-date_added')
-    today = timezone.now().date()
-    return render(request, 'stock_view.html', {
-        'medicine': medicine,
-        'batches': batches,
-        'today': today
-    })
-
-
 def add_medicine(request):
     if request.method == "POST":
         form = MedicineForm(request.POST)
@@ -50,12 +39,33 @@ def delete_medicine(request, pk):
         return redirect('inventory')
     return render(request, 'confirm_delete.html', {'medicine': medicine})
 
-def add_inventory(request):
+
+def stock_view(request, pk):
+    medicine = get_object_or_404(Medicine, pk=pk)
+    batches = Inventory.objects.filter(medicine=medicine).order_by('-date_added')
+
+    total_stock = batches.aggregate(
+        total=Sum("current_stock")
+    )["total"] or 0
+
+    return render(request, "stock_view.html", {
+        "medicine": medicine,
+        "batches": batches,
+        "today": timezone.now().date(),
+        "total_stock": total_stock,
+    })
+
+
+def add_stock(request, pk):
+    medicine = get_object_or_404(Medicine, pk=pk)
     if request.method == "POST":
         form = InventoryForm(request.POST)
         if form.is_valid():
-            form.save()
-            return redirect('inventory')
+            # This handles the association automatically
+            inventory = form.save(commit=False)
+            inventory.medicine = medicine 
+            inventory.save()
+            return redirect('stock_view', pk=medicine.pk)
     else:
         form = InventoryForm()
-    return render(request, 'add_inventory.html', {'form': form})
+    return render(request, 'add_stock.html', {'form': form, 'medicine': medicine})

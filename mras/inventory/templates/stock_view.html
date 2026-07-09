@@ -3,57 +3,225 @@
 {% block title %}Stock Batches - {{ medicine.name }}{% endblock %}
 
 {% block content %}
-<div class="mb-8">
-    <a href="{% url 'inventory' %}" class="inline-flex items-center text-sm text-slate-500 hover:text-emerald-700 transition-colors mb-4">
-        &larr; Back to Inventory
-    </a>
+<div class="max-w-7xl mx-auto">
 
-    <div class="flex justify-between items-start">
+    <!-- Header -->
+    <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 mb-8">
+
         <div>
-            <h1 class="text-2xl font-bold text-slate-900">{{ medicine.name }}</h1>
-            <p class="text-slate-500">Generic: {{ medicine.generic_name }} | Manufacturer: {{ medicine.manufacturer|default:"N/A" }}</p>
-        </div>
-        <div class="px-4 py-2 bg-emerald-50 text-emerald-700 rounded-lg border border-emerald-100 text-sm font-semibold">
-            Form: {{ medicine.dosage_form|default:"-" }}
-        </div>
-    </div>
-</div>
+            <a href="{% url 'inventory' %}"
+               class="inline-flex items-center gap-2 text-sm text-slate-500 hover:text-emerald-600 mb-4 transition">
+                ← Back to Inventory
+            </a>
 
-<div class="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
-    <table class="w-full text-left text-sm">
-        <thead class="bg-slate-50 border-b border-slate-200">
-            <tr>
-                <th class="px-6 py-4 font-semibold text-slate-700">Batch Number</th>
-                <th class="px-6 py-4 font-semibold text-slate-700">Expiry Status</th>
-                <th class="px-6 py-4 font-semibold text-slate-700 text-right">Current Stock</th>
-                <th class="px-6 py-4 font-semibold text-slate-700">Date Added</th>
-            </tr>
-        </thead>
-        <tbody class="divide-y divide-slate-100">
-            {% for batch in batches %}
-            <tr class="hover:bg-slate-50 transition-colors">
-                <td class="px-6 py-4 font-medium text-slate-900">{{ batch.batch_number }}</td>
-                <td class="px-6 py-4">
-                    {% with status=batch.expiry_status %}
-                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
-                            {% if status == 'red' %} bg-red-100 text-red-700 
-                            {% elif status == 'orange' %} bg-orange-100 text-orange-700 
-                            {% else %} bg-emerald-100 text-emerald-700 {% endif %}">
-                            {{ batch.expiry_date }}
-                        </span>
-                    {% endwith %}
-                </td>
-                <td class="px-6 py-4 text-right font-mono">{{ batch.current_stock }} units</td>
-                <td class="px-6 py-4 text-slate-500">{{ batch.date_added|date:"M d, Y" }}</td>
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="4" class="px-6 py-12 text-center text-slate-400">
-                    No active stock batches found.
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+            <h1 class="text-3xl font-bold text-slate-900">
+                {{ medicine.name }}
+            </h1>
+
+            <div class="mt-2 flex flex-wrap gap-3 text-sm">
+
+                <span class="px-3 py-1 bg-slate-100 rounded-full text-slate-700">
+                    Generic:
+                    <strong>{{ medicine.generic_name }}</strong>
+                </span>
+
+                <span class="px-3 py-1 bg-slate-100 rounded-full text-slate-700">
+                    Manufacturer:
+                    <strong>{{ medicine.manufacturer|default:"N/A" }}</strong>
+                </span>
+
+                <span class="px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full font-medium">
+                    {{ medicine.dosage_form|default:"Unknown Form" }}
+                </span>
+
+            </div>
+        </div>
+
+        <div>
+            <a href="{% url 'add_stock' medicine.pk %}"
+               class="inline-flex items-center gap-2 px-5 py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl shadow-lg hover:shadow-xl transition font-medium">
+                ➕ Add Stock
+            </a>
+        </div>
+
+    </div>
+
+    <!-- Summary Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
+            <p class="text-sm text-slate-500">
+                Active Batches
+            </p>
+
+            <h2 class="mt-2 text-4xl font-bold text-slate-900">
+                {{ batches|length }}
+            </h2>
+        </div>
+
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
+            <p class="text-sm text-slate-500">
+                Total Stock
+            </p>
+
+            <h2 class="mt-2 text-4xl font-bold text-emerald-600">
+                {{ total_stock|default:"0" }}
+            </h2>
+
+            <p class="text-sm text-slate-500 mt-1">
+                Units Available
+            </p>
+        </div>
+
+    </div>
+
+    <!-- Table Card -->
+    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+
+        <div class="px-6 py-5 border-b bg-slate-50">
+            <h2 class="text-lg font-semibold text-slate-800">
+                Stock Batch Details
+            </h2>
+        </div>
+
+        <div class="overflow-x-auto">
+
+            <table class="min-w-full">
+
+                <thead class="bg-slate-100 text-slate-700">
+
+                    <tr>
+
+                        <th class="px-6 py-4 text-left font-semibold">
+                            Batch Number
+                        </th>
+
+                        <th class="px-6 py-4 text-left font-semibold">
+                            Expiry Date
+                        </th>
+
+                        <th class="px-6 py-4 text-right font-semibold">
+                            Current Stock
+                        </th>
+
+                        <th class="px-6 py-4 text-left font-semibold">
+                            Added On
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody class="divide-y divide-slate-100">
+
+                    {% for batch in batches %}
+
+                    <tr class="hover:bg-emerald-50 transition">
+
+                        <td class="px-6 py-5">
+
+                            <div class="font-semibold text-slate-900">
+                                {{ batch.batch_number }}
+                            </div>
+
+                        </td>
+
+                     <td class="px-6 py-5">
+
+    {% if batch.expiry_date < today %}
+
+        <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-100 text-red-700 text-xs font-bold">
+            🔴 Expired
+        </span>
+
+        <div class="text-xs text-red-600 mt-1">
+            {{ batch.expiry_date|date:"M d, Y" }}
+        </div>
+
+    {% elif batch.expiry_status == "orange" %}
+
+        <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-orange-100 text-orange-700 text-xs font-bold">
+            🟠 Expiring Soon
+        </span>
+
+        <div class="text-xs text-orange-600 mt-1">
+            {{ batch.expiry_date|date:"M d, Y" }}
+        </div>
+
+    {% else %}
+
+        <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-green-100 text-green-700 text-xs font-bold">
+            🟢 Valid
+        </span>
+
+        <div class="text-xs text-slate-500 mt-1">
+            {{ batch.expiry_date|date:"M d, Y" }}
+        </div>
+
+    {% endif %}
+
+</td>
+
+                        <td class="px-6 py-5 text-right">
+
+                            <span class="font-bold text-lg text-slate-900">
+                                {{ batch.current_stock }}
+                            </span>
+
+                            <span class="text-slate-500 text-sm">
+                                units
+                            </span>
+
+                        </td>
+
+                        <td class="px-6 py-5 text-slate-500">
+
+                            {{ batch.date_added|date:"M d, Y" }}
+
+                        </td>
+
+                    </tr>
+
+                    {% empty %}
+
+                    <tr>
+
+                        <td colspan="4" class="py-20">
+
+                            <div class="flex flex-col items-center">
+
+                                <div class="text-6xl mb-4">
+                                    📦
+                                </div>
+
+                                <h3 class="text-xl font-semibold text-slate-700">
+                                    No Stock Available
+                                </h3>
+
+                                <p class="text-slate-500 mt-2">
+                                    There are currently no stock batches for this medicine.
+                                </p>
+
+                                <a href="{% url 'add_stock' medicine.pk %}"
+                                   class="mt-6 px-5 py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl shadow transition">
+                                    Add First Stock
+                                </a>
+
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
 </div>
 {% endblock %}
