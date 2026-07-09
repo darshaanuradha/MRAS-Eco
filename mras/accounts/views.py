@@ -28,7 +28,13 @@ def home(request):
     ).filter(total_stock__lt=F('min_stock_level'))
     
     low_stock_count = low_stock_medicines.count()
-    
+
+    # Fetch the actual low stock medicine objects
+    low_stock_medicines = Medicine.objects.annotate(
+        total_stock=Sum('inventory__current_stock')
+    ).filter(total_stock__lt=F('min_stock_level'))
+
+    low_stock_count = low_stock_medicines.count()
     # Get 5 most recent pending consultations
     recent_consultations = Consultation.objects.filter(
         status='Pending'
@@ -40,6 +46,7 @@ def home(request):
         'active_doctors': active_doctors,
         'low_stock_count': low_stock_count,
         'recent_consultations': recent_consultations,
+        'low_stock_medicines': low_stock_medicines,
     }
     return render(request, 'home.html', context)
 
