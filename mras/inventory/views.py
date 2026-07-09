@@ -43,11 +43,16 @@ def delete_medicine(request, pk):
 def stock_view(request, pk):
     medicine = get_object_or_404(Medicine, pk=pk)
     batches = Inventory.objects.filter(medicine=medicine).order_by('-date_added')
-    today = timezone.now().date()
-    return render(request, 'stock_view.html', {
-        'medicine': medicine,
-        'batches': batches,
-        'today': today
+
+    total_stock = batches.aggregate(
+        total=Sum("current_stock")
+    )["total"] or 0
+
+    return render(request, "stock_view.html", {
+        "medicine": medicine,
+        "batches": batches,
+        "today": timezone.now().date(),
+        "total_stock": total_stock,
     })
 
 
