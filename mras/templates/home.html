@@ -112,6 +112,7 @@
                     <th class="px-6 py-4 font-medium">Current Total</th>
                     <th class="px-6 py-4 font-medium">Min Level</th>
                     <th class="px-6 py-4 font-medium text-right">Status</th>
+                    <th class="px-6 py-4 font-medium text-right">Action</th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-slate-100">
@@ -125,10 +126,13 @@
                             Restock Needed
                         </span>
                     </td>
+                    <td class="px-6 py-4 text-right">
+                        <a href="{% url 'stock_view' medicine.pk %}" class="text-emerald-600 hover:text-emerald-700 font-medium text-sm">Restock</a>
+                    </td>
                 </tr>
                 {% empty %}
                 <tr>
-                    <td colspan="4" class="px-6 py-8 text-center text-slate-500">
+                    <td colspan="5" class="px-6 py-8 text-center text-slate-500">
                         All stock levels are optimal.
                     </td>
                 </tr>

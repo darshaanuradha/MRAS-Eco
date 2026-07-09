@@ -16,6 +16,10 @@
         <div class="px-4 py-2 bg-emerald-50 text-emerald-700 rounded-lg border border-emerald-100 text-sm font-semibold">
             Form: {{ medicine.dosage_form|default:"-" }}
         </div>
+        <a
+            href="{% url 'add_stock' medicine.pk %}" class="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors font-medium">
+            Add Stock
+        </a>
     </div>
 </div>
 
