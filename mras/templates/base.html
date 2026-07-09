@@ -228,7 +228,48 @@
    <!-- UI INTERACTION SCRIPTS -->
     {% if user.is_authenticated %}
     <script>
-        // ... (Keep your existing sidebar toggle code here) ...
+        // Mobile sidebar toggle
+        const sidebar = document.getElementById('sidebar');
+        const mobileOverlay = document.getElementById('mobile-overlay');
+
+        function openSidebar() {
+            if (!sidebar || !mobileOverlay) return;
+            sidebar.classList.remove('-translate-x-full');
+            sidebar.classList.add('translate-x-0');
+            mobileOverlay.classList.remove('hidden');
+            mobileOverlay.classList.add('opacity-100');
+            document.body.classList.add('overflow-hidden');
+        }
+
+        function closeSidebar() {
+            if (!sidebar || !mobileOverlay) return;
+            sidebar.classList.add('-translate-x-full');
+            sidebar.classList.remove('translate-x-0');
+            mobileOverlay.classList.remove('opacity-100');
+            mobileOverlay.classList.add('hidden');
+            document.body.classList.remove('overflow-hidden');
+        }
+
+        window.toggleSidebar = function () {
+            if (!sidebar || !mobileOverlay) return;
+            if (sidebar.classList.contains('-translate-x-full')) {
+                openSidebar();
+            } else {
+                closeSidebar();
+            }
+        };
+
+        window.addEventListener('resize', function () {
+            if (window.innerWidth >= 1024) {
+                closeSidebar();
+            }
+        });
+
+        document.addEventListener('keydown', function (event) {
+            if (event.key === 'Escape') {
+                closeSidebar();
+            }
+        });
 
         // Notification Dropdown & Badge Logic
         const notifBtn = document.getElementById('notification-button');
