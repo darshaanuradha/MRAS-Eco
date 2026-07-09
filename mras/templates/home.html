@@ -83,7 +83,7 @@
                     <tbody class="divide-y divide-slate-100">
                         {% for consult in recent_consultations %}
                         <tr class="hover:bg-slate-50 transition-colors">
-                            <td class="px-6 py-4 font-medium text-slate-900">{{ consult.patient.full_name }}</td>
+                            <td class="px-6 py-4 font-medium text-slate-900">{{ consult.patient.name }}</td>
                             <td class="px-6 py-4">{{ consult.doctor.full_name }}</td>
                             <td class="px-6 py-4">{{ consult.consultation_date|date:"M d, Y H:i" }}</td>
                             <td class="px-6 py-4 text-right">
