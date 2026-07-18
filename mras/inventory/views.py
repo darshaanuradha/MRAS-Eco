@@ -1,15 +1,22 @@
 from django.shortcuts import get_object_or_404, render, redirect
-from django.db.models import Sum
+from django.db.models import Sum, Q
 from .forms import MedicineForm, InventoryForm
 from .models import Medicine, Inventory
 from datetime import timedelta
 from django.utils import timezone
+
 def inventory_view(request):
+    query = request.GET.get('q', '').strip()
     # Annotate total stock from related Inventory batches
     medicines = Medicine.objects.annotate(
         total_stock=Sum('inventory__current_stock')
-    ).order_by('name')
-    return render(request, 'inventory.html', {'medicines': medicines})
+    )
+    if query:
+        medicines = medicines.filter(
+            Q(name__icontains=query) | Q(generic_name__icontains=query)
+        )
+    medicines = medicines.order_by('name')
+    return render(request, 'inventory.html', {'medicines': medicines, 'query': query})
 
 def add_medicine(request):
     if request.method == "POST":

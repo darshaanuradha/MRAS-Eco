@@ -17,6 +17,17 @@
     </div>
 </div>
 
+<!-- Search Box -->
+<div class="mb-6 flex flex-col md:flex-row justify-between gap-4">
+    <form method="GET" action="{% url 'inventory' %}" class="flex gap-2 w-full md:w-1/2">
+        <input type="text" name="q" value="{{ query|default_if_none:'' }}" placeholder="Search medicines by name or generic name..." class="border rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-emerald-500">
+        <button type="submit" class="bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2 rounded-lg font-medium transition-colors">Search</button>
+        {% if query %}
+            <a href="{% url 'inventory' %}" class="bg-slate-200 hover:bg-slate-300 text-slate-700 px-4 py-2 rounded-lg font-medium flex items-center justify-center transition-colors">Clear</a>
+        {% endif %}
+    </form>
+</div>
+
 <div class="bg-white border border-slate-200 rounded-lg shadow-sm overflow-hidden">
     <table class="w-full text-left text-sm text-slate-600">
         <thead class="bg-slate-50 uppercase text-xs font-semibold text-slate-500 border-b border-slate-200">

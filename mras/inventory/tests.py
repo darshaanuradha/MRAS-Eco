@@ -27,3 +27,25 @@ class MedicineModelTest(TestCase):
         
         # 3. Assert that the default max_stock_level (500) was applied automatically
         self.assertEqual(med.max_stock_level, 500)
+
+
+from django.urls import reverse
+
+class InventorySearchViewTest(TestCase):
+    def setUp(self):
+        Medicine.objects.create(name="Panadol", generic_name="Paracetamol")
+        Medicine.objects.create(name="Amoxil", generic_name="Amoxicillin")
+
+    def test_search_by_name(self):
+        url = reverse('inventory')
+        response = self.client.get(url, {'q': 'pan'})
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Panadol")
+        self.assertNotContains(response, "Amoxil")
+
+    def test_search_by_generic_name(self):
+        url = reverse('inventory')
+        response = self.client.get(url, {'q': 'amox'})
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Amoxil")
+        self.assertNotContains(response, "Panadol")

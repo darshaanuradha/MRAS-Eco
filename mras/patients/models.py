@@ -8,5 +8,9 @@ class Patient(models.Model):
     address = models.TextField()
     medical_history = models.TextField(blank=True, null=True)
 
+    @property
+    def full_name(self):
+        return self.name
+
     def __str__(self):
         return self.name
