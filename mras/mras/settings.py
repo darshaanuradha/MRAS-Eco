@@ -2,6 +2,15 @@ import os
 from pathlib import Path
 from dotenv import load_dotenv
 
+# Bypass MariaDB version check for older MariaDB/XAMPP versions
+from django.db.backends.base.base import BaseDatabaseWrapper
+BaseDatabaseWrapper.check_database_version_supported = lambda self: None
+
+# Disable RETURNING features because older MariaDB/MySQL doesn't support them
+from django.db.backends.mysql.features import DatabaseFeatures
+DatabaseFeatures.can_return_columns_from_insert = property(lambda self: False)
+DatabaseFeatures.can_return_rows_from_bulk_insert = property(lambda self: False)
+
 # Load the .env file
 BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv(BASE_DIR.parent / '.env')
@@ -22,8 +31,8 @@ DATABASES = {
         'NAME': os.getenv('DATABASE_NAME', 'mras_dev'),
         'USER': os.getenv('DATABASE_USER', 'root'),
         'PASSWORD': os.getenv('DATABASE_PASSWORD', ''),
-        'HOST': 'localhost',
-        'PORT': '3306',
+        'HOST': os.getenv('DATABASE_HOST', 'localhost'),
+        'PORT': os.getenv('DATABASE_PORT', '3306'),
     }
 }
 
