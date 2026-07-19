@@ -1,66 +1,152 @@
-{% extends 'base.html' %}
-
-{% block title %}Patients - MRAS Eco{% endblock %}
-
+{% extends 'base.html' %} {% block title %} Patients - MRAS Eco {% endblock %}
 {% block content %}
+
 <div class="page-header">
-    <div class="page-header-info">
-        <h1 class="page-title">Patients</h1>
-    </div>
-    <div class="page-header-actions">
-        <a href="{% url 'patient_create' %}" class="btn btn-primary">
-            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
-            Add Patient
-        </a>
-    </div>
+  <div class="page-header-info">
+    <h1 class="page-title">Patients</h1>
+  </div>
+
+  <div class="page-header-actions">
+    <a href="{% url 'patient_create' %}" class="btn btn-primary">
+      <svg
+        class="w-4 h-4 mr-2"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M12 4v16m8-8H4"
+        ></path>
+      </svg>
+      Add Patient
+    </a>
+  </div>
 </div>
 
 <div class="mb-6">
-    <form method="GET" action="{% url 'patients' %}" class="search-bar flex gap-2">
-        <div class="input-icon-wrapper relative w-full md:w-96">
-            <svg class="input-icon w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-            <input type="text" name="q" value="{{ query }}" placeholder="Search patients by name..." class="form-input pl-10 w-full">
-        </div>
-        <button type="submit" class="btn btn-primary">Search</button>
-    </form>
+  <form
+    method="GET"
+    action="{% url 'patients' %}"
+    class="search-bar flex gap-2"
+  >
+    <div class="input-icon-wrapper relative w-full md:w-96">
+      <svg
+        class="input-icon w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+        ></path>
+      </svg>
+
+      <input
+        type="text"
+        name="q"
+        value="{{ query }}"
+        placeholder="Search patients by name..."
+        class="form-input pl-10 w-full"
+      />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Search</button>
+  </form>
 </div>
 
 <div class="card">
-    <div class="table-container">
-        <table class="data-table min-w-full">
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Contact</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for patient in patients %}
-                <tr>
-                    <td class="cell-primary">{{ patient.name }}</td>
-                    <td class="cell-secondary">{{ patient.contact }}</td>
-                    <td class="cell-actions">
-                        <a href="{% url 'patient_detail' patient.pk %}" class="action-view text-cyan-600 hover:text-cyan-900">View</a>
-                        <a href="{% url 'patient_update' patient.pk %}" class="action-edit text-indigo-600 hover:text-indigo-900">Edit</a>
-                        <a href="{% url 'patient_delete' patient.pk %}" class="action-delete text-red-600 hover:text-red-900">Delete</a>
-                    </td>
-                </tr>
-                {% empty %}
-                <tr>
-                    <td colspan="3">
-                        <div class="empty-state text-center py-8">
-                            <div class="empty-icon mx-auto flex justify-center mb-2 text-slate-400">
-                                <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
-                            </div>
-                            <h3 class="empty-title text-lg font-medium text-slate-900">No patients found</h3>
-                            <p class="empty-text text-sm text-slate-500 mt-1">Get started by creating a new patient.</p>
-                        </div>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
+  <div class="table-container">
+    <table class="data-table min-w-full">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Contact</th>
+          <th>Age</th>
+          <th>Gender</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        {% for patient in patients %}
+
+        <tr>
+          <td class="cell-primary">{{ patient.name }}</td>
+
+          <td class="cell-secondary">{{ patient.contact }}</td>
+
+          <td class="cell-secondary">{{ patient.age }}</td>
+
+          <td class="cell-secondary">{{ patient.gender }}</td>
+
+          <td class="cell-actions">
+            <a
+              href="{% url 'patient_detail' patient.pk %}"
+              class="action-view text-cyan-600 hover:text-cyan-900"
+            >
+              View
+            </a>
+
+            <a
+              href="{% url 'patient_update' patient.pk %}"
+              class="action-edit text-indigo-600 hover:text-indigo-900"
+            >
+              Edit
+            </a>
+
+            <a
+              href="{% url 'patient_delete' patient.pk %}"
+              class="action-delete text-red-600 hover:text-red-900"
+            >
+              Delete
+            </a>
+          </td>
+        </tr>
+
+        {% empty %}
+
+        <tr>
+          <td colspan="5">
+            <div class="empty-state text-center py-8">
+              <div
+                class="empty-icon mx-auto flex justify-center mb-2 text-slate-400"
+              >
+                <svg
+                  class="w-12 h-12"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"
+                  ></path>
+                </svg>
+              </div>
+
+              <h3 class="empty-title text-lg font-medium text-slate-900">
+                No patients found
+              </h3>
+
+              <p class="empty-text text-sm text-slate-500 mt-1">
+                Get started by creating a new patient.
+              </p>
+            </div>
+          </td>
+        </tr>
+
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
 </div>
+
 {% endblock %}
