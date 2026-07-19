@@ -11,17 +11,17 @@
         @media print {
             body { font-size: 12pt; background-color: white !important; }
             .no-print { display: none !important; }
-            .print-container { width: 100%; max-width: none; box-shadow: none; padding: 0; margin: 0; }
+            .print-container { width: 100%; max-width: none; box-shadow: none; padding: 0; margin: 0; border: none; }
             @page { margin: 2cm; }
         }
     </style>
 </head>
-<body class="bg-gray-100 p-8">
+<body class="bg-slate-50 p-8 font-sans">
 
     <!-- Action Bar (Hidden when printing) -->
     <div class="max-w-4xl mx-auto mb-6 flex justify-end no-print gap-3">
-        <a href="{% url 'consultation_list' %}" class="px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-md shadow-sm hover:bg-gray-50 font-medium">Back to List</a>
-        <button onclick="window.print()" class="px-4 py-2 bg-emerald-600 text-white rounded-md shadow-sm hover:bg-emerald-700 font-medium flex items-center">
+        <a href="{% url 'consultation_list' %}" class="px-4 py-2 bg-white border border-slate-300 text-slate-700 rounded-md shadow-sm hover:bg-slate-50 font-medium transition-colors">Back to List</a>
+        <button onclick="window.print()" class="px-4 py-2 bg-cyan-600 text-white rounded-md shadow-sm hover:bg-cyan-700 font-medium flex items-center transition-colors">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
             </svg>
@@ -30,67 +30,67 @@
     </div>
 
     <!-- Printable Area -->
-    <div class="print-container max-w-4xl mx-auto bg-white p-10 shadow-lg border border-gray-200 rounded-lg">
+    <div class="print-container max-w-4xl mx-auto bg-white p-10 shadow-lg border border-slate-200 rounded-lg">
         
         <!-- Header -->
-        <div class="flex justify-between items-start border-b-2 border-emerald-600 pb-6 mb-6">
+        <div class="flex justify-between items-start border-b-2 border-cyan-600 pb-6 mb-6">
             <div>
-                <h1 class="text-3xl font-bold text-gray-900 tracking-tight">MRAS Eco Clinic</h1>
-                <p class="text-sm text-gray-500 mt-1">Medical Room Automation System</p>
-                <p class="text-sm text-gray-500">Tel: +94 11 234 5678 | Email: clinic@mraseco.com</p>
+                <h1 class="text-3xl font-bold text-slate-900 tracking-tight">MRAS Eco Clinic</h1>
+                <p class="text-sm text-slate-500 mt-1">Medical Room Automation System</p>
+                <p class="text-sm text-slate-500">Tel: +94 11 234 5678 | Email: clinic@mraseco.com</p>
             </div>
             <div class="text-right">
-                <p class="text-sm font-semibold text-gray-900">Date: <span class="font-normal">{{ consultation.consultation_date|date:"F d, Y" }}</span></p>
-                <p class="text-sm font-semibold text-gray-900 mt-1">Consultation ID: <span class="font-normal">#{{ consultation.id|stringformat:"05d" }}</span></p>
+                <p class="text-sm font-semibold text-slate-900">Date: <span class="font-normal">{{ consultation.consultation_date|date:"F d, Y" }}</span></p>
+                <p class="text-sm font-semibold text-slate-900 mt-1">Consultation ID: <span class="font-normal">#{{ consultation.id|stringformat:"05d" }}</span></p>
             </div>
         </div>
 
         <!-- Patient & Doctor Info -->
-        <div class="grid grid-cols-2 gap-8 mb-8 bg-gray-50 p-4 rounded-md border border-gray-100">
+        <div class="grid grid-cols-2 gap-8 mb-8 bg-slate-50 p-5 rounded-md border border-slate-100">
             <div>
-                <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Patient Details</h3>
-                <p class="text-base font-bold text-gray-900">{{ consultation.patient.full_name }}</p>
-                <p class="text-sm text-gray-600">Emp ID: {{ consultation.patient.employee_id }}</p>
-                <p class="text-sm text-gray-600">Contact: {{ consultation.patient.contact_number|default:"N/A" }}</p>
+                <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Patient Details</h3>
+                <p class="text-base font-bold text-slate-900">{{ consultation.patient.full_name }}</p>
+                <p class="text-sm text-slate-600 mt-1">Emp ID: {{ consultation.patient.employee_id }}</p>
+                <p class="text-sm text-slate-600 mt-1">Contact: {{ consultation.patient.contact_number|default:"N/A" }}</p>
             </div>
             <div>
-                <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Consulting Doctor</h3>
-                <p class="text-base font-bold text-gray-900">Dr. {{ consultation.doctor.full_name }}</p>
-                <p class="text-sm text-gray-600">{{ consultation.doctor.specialization }}</p>
+                <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Consulting Doctor</h3>
+                <p class="text-base font-bold text-slate-900">Dr. {{ consultation.doctor.full_name }}</p>
+                <p class="text-sm text-slate-600 mt-1">{{ consultation.doctor.specialization }}</p>
             </div>
         </div>
 
         <!-- Diagnosis -->
         <div class="mb-8">
-            <h3 class="text-sm font-bold text-gray-900 mb-2 border-b pb-1">Diagnosis</h3>
-            <p class="text-gray-800 whitespace-pre-wrap">{{ consultation.diagnosis }}</p>
+            <h3 class="text-sm font-bold text-slate-900 mb-2 border-b border-slate-200 pb-2">Diagnosis</h3>
+            <p class="text-slate-800 whitespace-pre-wrap leading-relaxed">{{ consultation.diagnosis }}</p>
         </div>
 
         <!-- Rx / Medicines -->
         <div class="mb-12">
-            <h3 class="text-3xl font-serif font-bold text-gray-900 mb-4 border-b pb-2">Rx</h3>
+            <h3 class="text-3xl font-serif font-bold text-slate-900 mb-4 border-b border-slate-200 pb-2">Rx</h3>
             
             <table class="w-full text-left border-collapse">
                 <thead>
-                    <tr class="border-b-2 border-gray-200">
-                        <th class="py-2 text-sm font-bold text-gray-700">Medicine</th>
-                        <th class="py-2 text-sm font-bold text-gray-700">Dosage Instructions</th>
-                        <th class="py-2 text-sm font-bold text-gray-700 text-center">Days</th>
-                        <th class="py-2 text-sm font-bold text-gray-700 text-right">Qty</th>
+                    <tr class="border-b-2 border-slate-200">
+                        <th class="py-2 text-sm font-bold text-slate-700">Medicine</th>
+                        <th class="py-2 text-sm font-bold text-slate-700">Dosage Instructions</th>
+                        <th class="py-2 text-sm font-bold text-slate-700 text-center">Days</th>
+                        <th class="py-2 text-sm font-bold text-slate-700 text-right">Qty</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-gray-100">
+                <tbody class="divide-y divide-slate-100">
                     {% for item in prescription_items %}
                     <tr>
                         <td class="py-4 align-top">
-                            <p class="font-bold text-gray-900">{{ item.medicine.name }}</p>
-                            <p class="text-xs text-gray-500">{{ item.medicine.generic_name }}</p>
+                            <p class="font-bold text-slate-900">{{ item.medicine.name }}</p>
+                            <p class="text-xs text-slate-500 mt-1">{{ item.medicine.generic_name }}</p>
                             
                             <!-- Displaying Batch and Expiry info explicitly to the patient -->
                             {% if consultation.status == 'Completed' %}
-                            <div class="mt-2 p-2 bg-gray-50 border border-gray-100 rounded text-xs text-gray-600">
-                                <span class="font-semibold text-emerald-700">Dispensed Batches:</span>
-                                <ul class="mt-1 list-disc list-inside">
+                            <div class="mt-3 p-3 bg-slate-50 border border-slate-100 rounded-md text-xs text-slate-600">
+                                <span class="font-semibold text-cyan-700">Dispensed Batches:</span>
+                                <ul class="mt-1.5 space-y-1 list-disc list-inside">
                                 {% for allocation in item.allocations.all %}
                                     <li>Batch {{ allocation.inventory_batch.batch_number }} (Expires: {{ allocation.inventory_batch.expiry_date|date:"M Y" }}) - Qty: {{ allocation.quantity }}</li>
                                 {% empty %}
@@ -100,9 +100,9 @@
                             </div>
                             {% endif %}
                         </td>
-                        <td class="py-4 align-top text-sm text-gray-800">{{ item.dosage_instructions }}</td>
-                        <td class="py-4 align-top text-sm text-gray-800 text-center">{{ item.duration_days|default:"-" }}</td>
-                        <td class="py-4 align-top text-sm font-bold text-gray-900 text-right">{{ item.quantity }}</td>
+                        <td class="py-4 align-top text-sm text-slate-800">{{ item.dosage_instructions }}</td>
+                        <td class="py-4 align-top text-sm text-slate-800 text-center">{{ item.duration_days|default:"-" }}</td>
+                        <td class="py-4 align-top text-sm font-bold text-slate-900 text-right">{{ item.quantity }}</td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -110,15 +110,15 @@
         </div>
 
         <!-- Footer Signatures -->
-        <div class="flex justify-between items-end mt-20 pt-8 border-t border-gray-200">
+        <div class="flex justify-between items-end mt-20 pt-8 border-t border-slate-200">
             <div class="text-center">
-                <div class="border-b border-gray-400 w-48 mb-2"></div>
-                <p class="text-xs text-gray-500 uppercase tracking-wider">Patient Signature</p>
+                <div class="border-b border-slate-400 w-48 mb-2"></div>
+                <p class="text-xs text-slate-500 uppercase tracking-wider">Patient Signature</p>
             </div>
             <div class="text-center">
-                <div class="border-b border-gray-400 w-48 mb-2"></div>
-                <p class="text-xs text-gray-500 uppercase tracking-wider">Dr. {{ consultation.doctor.full_name }}</p>
-                <p class="text-xs text-gray-400 mt-1">Medical Officer</p>
+                <div class="border-b border-slate-400 w-48 mb-2"></div>
+                <p class="text-xs text-slate-500 uppercase tracking-wider">Dr. {{ consultation.doctor.full_name }}</p>
+                <p class="text-xs text-slate-400 mt-1">Medical Officer</p>
             </div>
         </div>
 

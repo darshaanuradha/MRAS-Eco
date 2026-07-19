@@ -1,70 +1,70 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
 {% block title %}Doctors - MRAS Eco{% endblock %}
 
 {% block content %}
-<div class="flex justify-between items-center mb-6">
-    <div>
-        <h1 class="text-2xl font-bold text-slate-900 tracking-tight">Doctors Directory</h1>
-        <p class="text-sm text-slate-500 mt-1">Manage and view all registered medical professionals.</p>
+<div class="page-header">
+    <div class="page-header-info">
+        <h1 class="page-title">Doctors Directory</h1>
+        <p class="page-subtitle">Manage and view all registered medical professionals.</p>
     </div>
-    <a href="{% url 'doctors:create' %}" class="inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-lg shadow-sm text-sm font-semibold text-white bg-emerald-600 hover:bg-emerald-700 transition-colors">
+    <a href="{% url 'doctors:create' %}" class="btn btn-primary">
         <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
         Add Doctor
     </a>
 </div>
 
-<div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-    <div class="overflow-x-auto">
-        <table class="min-w-full divide-y divide-slate-200">
-            <thead class="bg-slate-50">
+<div class="card">
+    <div class="table-container">
+        <table class="data-table">
+            <thead>
                 <tr>
-                    <th scope="col" class="px-6 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Doctor</th>
-                    <th scope="col" class="px-6 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Contact Info</th>
-                    <th scope="col" class="px-6 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Status</th>
-                    <th scope="col" class="relative px-6 py-3"><span class="sr-only">Actions</span></th>
+                    <th>Doctor</th>
+                    <th>Contact Info</th>
+                    <th>Status</th>
+                    <th class="text-right">Actions</th>
                 </tr>
             </thead>
-            <tbody class="bg-white divide-y divide-slate-200">
+            <tbody>
                 {% for doc in doctors %}
-                <tr class="hover:bg-slate-50 transition-colors">
-                    <td class="px-6 py-4 whitespace-nowrap">
+                <tr>
+                    <td>
                         <div class="flex items-center">
-                            <div class="flex-shrink-0 h-10 w-10 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-700 font-bold border border-emerald-200">
+                            <div class="avatar avatar-md avatar-primary">
                                 {{ doc.full_name|make_list|first|upper }}
                             </div>
                             <div class="ml-4">
-                                <div class="text-sm font-medium text-slate-900">{{ doc.full_name }}</div>
+                                <div class="font-medium text-slate-900">{{ doc.full_name }}</div>
                                 <div class="text-sm text-slate-500">{{ doc.specialization }}</div>
                             </div>
                         </div>
                     </td>
-                    <td class="px-6 py-4 whitespace-nowrap">
+                    <td>
                         <div class="text-sm text-slate-900">{{ doc.email|default:"No email" }}</div>
                         <div class="text-sm text-slate-500">{{ doc.phone_number|default:"No phone" }}</div>
                     </td>
-                    <td class="px-6 py-4 whitespace-nowrap">
+                    <td>
                         {% if doc.is_active %}
-                        <span class="px-2.5 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200">
+                        <span class="badge badge-success">
                             Active
                         </span>
                         {% else %}
-                        <span class="px-2.5 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-slate-100 text-slate-800 border border-slate-200">
+                        <span class="badge badge-neutral">
                             Inactive
                         </span>
                         {% endif %}
                     </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                        <a href="{% url 'doctors:edit' doc.pk %}" class="text-emerald-600 hover:text-emerald-900 mr-3">Edit</a>
-                        <a href="{% url 'doctors:delete' doc.pk %}" class="text-red-600 hover:text-red-900">Delete</a>
+                    <td class="cell-actions text-right">
+                        <a href="{% url 'doctors:edit' doc.pk %}" class="action-edit mr-3">Edit</a>
+                        <a href="{% url 'doctors:delete' doc.pk %}" class="action-delete">Delete</a>
                     </td>
                 </tr>
                 {% empty %}
                 <tr>
-                    <td colspan="4" class="px-6 py-10 text-center text-slate-500">
-                        <div class="flex flex-col items-center">
-                            <svg class="w-12 h-12 text-slate-300 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
-                            <p class="text-sm font-medium">No doctors found.</p>
-                            <p class="text-xs mt-1">Get started by creating a new doctor profile.</p>
+                    <td colspan="4">
+                        <div class="empty-state">
+                            <svg class="empty-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                            <h3 class="empty-title">No doctors found.</h3>
+                            <p class="empty-text">Get started by creating a new doctor profile.</p>
                         </div>
                     </td>
                 </tr>

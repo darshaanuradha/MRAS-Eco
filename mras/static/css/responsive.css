@@ -1,0 +1,234 @@
+/* ============================================
+   MRAS Eco — Responsive Breakpoints
+   ============================================ */
+
+/* ── Mobile First ── */
+
+/* Small phones (320px - 479px) */
+@media (max-width: 479px) {
+    .page-header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .page-header .btn {
+        width: 100%;
+    }
+
+    .stat-card {
+        padding: 16px;
+    }
+
+    .stat-value {
+        font-size: 1.5rem;
+    }
+
+    .stat-icon {
+        width: 44px;
+        height: 44px;
+    }
+
+    .stat-icon svg {
+        width: 22px;
+        height: 22px;
+    }
+
+    .card-body {
+        padding: 16px;
+    }
+
+    .data-table th,
+    .data-table td {
+        padding: 12px 14px;
+    }
+
+    .confirm-dialog {
+        padding: 20px 0;
+    }
+
+    .confirm-dialog .card-body {
+        padding: 24px 20px;
+    }
+
+    .confirm-actions {
+        flex-direction: column;
+    }
+
+    .detail-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+}
+
+/* Phones (480px - 639px) */
+@media (max-width: 639px) {
+    .topbar {
+        padding: 0 12px;
+    }
+
+    .notif-dropdown {
+        width: calc(100vw - 24px);
+        right: -8px;
+    }
+
+    /* Stack search + actions on list pages */
+    .list-toolbar {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .list-toolbar .search-bar {
+        max-width: 100%;
+    }
+}
+
+/* Tablets (640px - 767px) */
+@media (min-width: 640px) {
+    .form-grid-2 {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 16px;
+    }
+}
+
+/* Tablets landscape (768px - 1023px) */
+@media (min-width: 768px) {
+    .stat-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 16px;
+    }
+
+    .detail-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* Desktop (1024px+) */
+@media (min-width: 1024px) {
+    .stat-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+
+    .sidebar-overlay {
+        display: none !important;
+    }
+
+    .topbar-hamburger,
+    .topbar-mobile-brand,
+    .topbar-mobile-avatar {
+        display: none;
+    }
+}
+
+/* Large desktop (1280px+) */
+@media (min-width: 1280px) {
+    .main-content {
+        padding: 32px 40px;
+    }
+}
+
+/* XL desktop (1440px+) */
+@media (min-width: 1440px) {
+    .main-content-inner {
+        max-width: 1360px;
+    }
+}
+
+
+/* ═══════════════════════════════════════════
+   RESPONSIVE TABLE
+   ═══════════════════════════════════════════ */
+
+/* Horizontal scroll wrapper for tables on mobile */
+.table-container {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border-radius: var(--radius-xl);
+}
+
+/* Ensure table doesn't break on small screens */
+.data-table {
+    min-width: 600px;
+}
+
+/* Smaller min-width for simpler tables */
+.data-table.table-compact {
+    min-width: 400px;
+}
+
+
+/* ═══════════════════════════════════════════
+   RESPONSIVE FORM GRIDS
+   ═══════════════════════════════════════════ */
+
+.form-row {
+    display: grid;
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.form-row-2 {
+    grid-template-columns: 1fr;
+}
+
+.form-row-3 {
+    grid-template-columns: 1fr;
+}
+
+@media (min-width: 640px) {
+    .form-row-2 {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 768px) {
+    .form-row-3 {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+
+/* ═══════════════════════════════════════════
+   RESPONSIVE UTILITIES
+   ═══════════════════════════════════════════ */
+
+.hide-mobile {
+    display: none;
+}
+
+@media (min-width: 640px) {
+    .hide-mobile {
+        display: initial;
+    }
+}
+
+.show-mobile {
+    display: initial;
+}
+
+@media (min-width: 640px) {
+    .show-mobile {
+        display: none;
+    }
+}
+
+.hide-desktop {
+    display: initial;
+}
+
+@media (min-width: 1024px) {
+    .hide-desktop {
+        display: none;
+    }
+}
+
+.show-desktop {
+    display: none;
+}
+
+@media (min-width: 1024px) {
+    .show-desktop {
+        display: initial;
+    }
+}

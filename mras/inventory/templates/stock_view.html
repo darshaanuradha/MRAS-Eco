@@ -4,224 +4,94 @@
 
 {% block content %}
 <div class="max-w-7xl mx-auto">
+    <a href="{% url 'inventory' %}" class="inline-flex items-center gap-2 text-sm text-slate-500 hover:text-cyan-600 mb-4 transition">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+        Back to Inventory
+    </a>
 
-    <!-- Header -->
-    <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 mb-8">
-
-        <div>
-            <a href="{% url 'inventory' %}"
-               class="inline-flex items-center gap-2 text-sm text-slate-500 hover:text-emerald-600 mb-4 transition">
-                ← Back to Inventory
-            </a>
-
-            <h1 class="text-3xl font-bold text-slate-900">
-                {{ medicine.name }}
-            </h1>
-
-            <div class="mt-2 flex flex-wrap gap-3 text-sm">
-
-                <span class="px-3 py-1 bg-slate-100 rounded-full text-slate-700">
-                    Generic:
-                    <strong>{{ medicine.generic_name }}</strong>
-                </span>
-
-                <span class="px-3 py-1 bg-slate-100 rounded-full text-slate-700">
-                    Manufacturer:
-                    <strong>{{ medicine.manufacturer|default:"N/A" }}</strong>
-                </span>
-
-                <span class="px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full font-medium">
-                    {{ medicine.dosage_form|default:"Unknown Form" }}
-                </span>
-
+    <div class="page-header">
+        <div class="page-header-info">
+            <h1 class="page-title">{{ medicine.name }}</h1>
+            <div class="flex flex-wrap gap-3 mt-2">
+                <span class="badge badge-neutral">Generic: <strong>{{ medicine.generic_name }}</strong></span>
+                <span class="badge badge-neutral">Manufacturer: <strong>{{ medicine.manufacturer|default:"N/A" }}</strong></span>
+                <span class="badge badge-primary">{{ medicine.dosage_form|default:"Unknown Form" }}</span>
             </div>
         </div>
-
+        
         <div>
-            <a href="{% url 'add_stock' medicine.pk %}"
-               class="inline-flex items-center gap-2 px-5 py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl shadow-lg hover:shadow-xl transition font-medium">
-                ➕ Add Stock
+            <a href="{% url 'add_stock' medicine.pk %}" class="btn btn-primary">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                Add Stock
             </a>
         </div>
-
     </div>
 
-    <!-- Summary Cards -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-
-        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
-            <p class="text-sm text-slate-500">
-                Active Batches
-            </p>
-
-            <h2 class="mt-2 text-4xl font-bold text-slate-900">
-                {{ batches|length }}
-            </h2>
+        <div class="stat-card">
+            <p class="stat-label">Active Batches</p>
+            <h2 class="stat-value">{{ batches|length }}</h2>
         </div>
 
-        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
-            <p class="text-sm text-slate-500">
-                Total Stock
-            </p>
-
-            <h2 class="mt-2 text-4xl font-bold text-emerald-600">
-                {{ total_stock|default:"0" }}
-            </h2>
-
-            <p class="text-sm text-slate-500 mt-1">
-                Units Available
-            </p>
+        <div class="stat-card">
+            <p class="stat-label">Total Stock</p>
+            <h2 class="stat-value text-cyan-600">{{ total_stock|default:"0" }}</h2>
+            <p class="text-sm text-slate-500 mt-1">Units Available</p>
         </div>
-
     </div>
 
-    <!-- Table Card -->
-    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-
-        <div class="px-6 py-5 border-b bg-slate-50">
-            <h2 class="text-lg font-semibold text-slate-800">
-                Stock Batch Details
-            </h2>
+    <div class="card">
+        <div class="card-header">
+            <h2 class="text-lg font-semibold text-slate-800">Stock Batch Details</h2>
         </div>
-
-        <div class="overflow-x-auto">
-
-            <table class="min-w-full">
-
-                <thead class="bg-slate-100 text-slate-700">
-
+        
+        <div class="table-container">
+            <table class="data-table">
+                <thead>
                     <tr>
-
-                        <th class="px-6 py-4 text-left font-semibold">
-                            Batch Number
-                        </th>
-
-                        <th class="px-6 py-4 text-left font-semibold">
-                            Expiry Date
-                        </th>
-
-                        <th class="px-6 py-4 text-right font-semibold">
-                            Current Stock
-                        </th>
-
-                        <th class="px-6 py-4 text-left font-semibold">
-                            Added On
-                        </th>
-
+                        <th class="text-left">Batch Number</th>
+                        <th class="text-left">Expiry Date</th>
+                        <th class="text-right">Current Stock</th>
+                        <th class="text-left">Added On</th>
                     </tr>
-
                 </thead>
-
-                <tbody class="divide-y divide-slate-100">
-
+                <tbody>
                     {% for batch in batches %}
-
-                    <tr class="hover:bg-emerald-50 transition">
-
-                        <td class="px-6 py-5">
-
-                            <div class="font-semibold text-slate-900">
-                                {{ batch.batch_number }}
-                            </div>
-
-                        </td>
-
-                     <td class="px-6 py-5">
-
-    {% if batch.expiry_date < today %}
-
-        <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-100 text-red-700 text-xs font-bold">
-            🔴 Expired
-        </span>
-
-        <div class="text-xs text-red-600 mt-1">
-            {{ batch.expiry_date|date:"M d, Y" }}
-        </div>
-
-    {% elif batch.expiry_status == "orange" %}
-
-        <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-orange-100 text-orange-700 text-xs font-bold">
-            🟠 Expiring Soon
-        </span>
-
-        <div class="text-xs text-orange-600 mt-1">
-            {{ batch.expiry_date|date:"M d, Y" }}
-        </div>
-
-    {% else %}
-
-        <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-green-100 text-green-700 text-xs font-bold">
-            🟢 Valid
-        </span>
-
-        <div class="text-xs text-slate-500 mt-1">
-            {{ batch.expiry_date|date:"M d, Y" }}
-        </div>
-
-    {% endif %}
-
-</td>
-
-                        <td class="px-6 py-5 text-right">
-
-                            <span class="font-bold text-lg text-slate-900">
-                                {{ batch.current_stock }}
-                            </span>
-
-                            <span class="text-slate-500 text-sm">
-                                units
-                            </span>
-
-                        </td>
-
-                        <td class="px-6 py-5 text-slate-500">
-
-                            {{ batch.date_added|date:"M d, Y" }}
-
-                        </td>
-
-                    </tr>
-
-                    {% empty %}
-
                     <tr>
-
-                        <td colspan="4" class="py-20">
-
-                            <div class="flex flex-col items-center">
-
-                                <div class="text-6xl mb-4">
-                                    📦
-                                </div>
-
-                                <h3 class="text-xl font-semibold text-slate-700">
-                                    No Stock Available
-                                </h3>
-
-                                <p class="text-slate-500 mt-2">
-                                    There are currently no stock batches for this medicine.
-                                </p>
-
-                                <a href="{% url 'add_stock' medicine.pk %}"
-                                   class="mt-6 px-5 py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl shadow transition">
-                                    Add First Stock
-                                </a>
-
-                            </div>
-
+                        <td class="font-semibold text-slate-900">{{ batch.batch_number }}</td>
+                        <td>
+                            {% if batch.expiry_date < today %}
+                                <span class="badge badge-danger">Expired</span>
+                                <div class="text-xs text-red-600 mt-1">{{ batch.expiry_date|date:"M d, Y" }}</div>
+                            {% elif batch.expiry_status == "orange" %}
+                                <span class="badge badge-warning">Expiring Soon</span>
+                                <div class="text-xs text-amber-600 mt-1">{{ batch.expiry_date|date:"M d, Y" }}</div>
+                            {% else %}
+                                <span class="badge badge-success">Valid</span>
+                                <div class="text-xs text-slate-500 mt-1">{{ batch.expiry_date|date:"M d, Y" }}</div>
+                            {% endif %}
                         </td>
-
+                        <td class="text-right">
+                            <span class="font-bold text-lg text-slate-900">{{ batch.current_stock }}</span>
+                            <span class="text-slate-500 text-sm">units</span>
+                        </td>
+                        <td class="text-slate-500">{{ batch.date_added|date:"M d, Y" }}</td>
                     </tr>
-
+                    {% empty %}
+                    <tr>
+                        <td colspan="4">
+                            <div class="empty-state">
+                                <div class="empty-icon">📦</div>
+                                <h3 class="empty-title">No Stock Available</h3>
+                                <p class="empty-text">There are currently no stock batches for this medicine.</p>
+                                <a href="{% url 'add_stock' medicine.pk %}" class="btn btn-primary mt-4">Add First Stock</a>
+                            </div>
+                        </td>
+                    </tr>
                     {% endfor %}
-
                 </tbody>
-
             </table>
-
         </div>
-
     </div>
-
 </div>
 {% endblock %}

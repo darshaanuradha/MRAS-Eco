@@ -1,25 +1,27 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
 {% block title %}Delete Doctor - MRAS Eco{% endblock %}
 
 {% block content %}
-<div class="max-w-md mx-auto py-12">
-    <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-8 text-center">
-        <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-red-100 mb-4">
-            <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+<div class="confirm-dialog max-w-md mx-auto py-12">
+    <div class="card">
+        <div class="card-body text-center">
+            <div class="confirm-icon danger mx-auto mb-4 inline-flex items-center justify-center w-12 h-12 rounded-full bg-red-100">
+                <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+            </div>
+            
+            <h1 class="confirm-title text-xl font-bold text-slate-900 tracking-tight mb-2">Delete Doctor Profile?</h1>
+            <p class="confirm-text text-sm text-slate-500 mb-8">Are you sure you want to delete the record for <strong>{{ doctor.full_name }}</strong>? This action cannot be undone and may affect associated patient records.</p>
+            
+            <form method="POST" class="confirm-actions flex flex-col sm:flex-row gap-3">
+                {% csrf_token %}
+                <a href="{% url 'doctors:list' %}" class="btn btn-secondary flex-1">
+                    Cancel
+                </a>
+                <button type="submit" class="btn btn-danger flex-1">
+                    Yes, Delete
+                </button>
+            </form>
         </div>
-        
-        <h1 class="text-xl font-bold text-slate-900 tracking-tight mb-2">Delete Doctor Profile?</h1>
-        <p class="text-sm text-slate-500 mb-8">Are you sure you want to delete the record for <strong>{{ doctor.full_name }}</strong>? This action cannot be undone and may affect associated patient records.</p>
-        
-        <form method="POST" class="flex flex-col sm:flex-row gap-3">
-            {% csrf_token %}
-            <a href="{% url 'doctors:list' %}" class="flex-1 inline-flex justify-center items-center py-2.5 px-4 border border-slate-200 rounded-lg shadow-sm text-sm font-semibold text-slate-700 bg-white hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 transition-all">
-                Cancel
-            </a>
-            <button type="submit" class="flex-1 justify-center items-center py-2.5 px-4 border border-transparent rounded-lg shadow-sm text-sm font-semibold text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-all">
-                Yes, Delete
-            </button>
-        </form>
     </div>
 </div>
 {% endblock %}

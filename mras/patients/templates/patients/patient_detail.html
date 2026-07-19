@@ -3,44 +3,49 @@
 {% block title %}{{ patient.name }} - Patient Details{% endblock %}
 
 {% block content %}
-<div class="space-y-6">
-    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-100 pb-6">
-        <div>
-            <h1 class="text-2xl font-bold text-slate-900 tracking-tight">{{ patient.name }}</h1>
-            <p class="text-sm text-slate-500 mt-1">Full Patient Details</p>
+<div class="page-header flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+    <div class="page-header-info flex items-center gap-4">
+        <div class="avatar avatar-xl avatar-primary flex items-center justify-center bg-cyan-100 text-cyan-700 rounded-full w-16 h-16">
+            <span class="text-2xl font-bold">{{ patient.name.0|upper }}</span>
         </div>
-        <div class="mt-6 flex gap-4">
-            <a href="{% url 'patients' %}" class="inline-block bg-slate-100 text-slate-700 px-4 py-2 rounded hover:bg-slate-200">Back to Patients</a>
-            <a href="{% url 'patient_update' patient.pk %}" class="inline-block bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700">Edit Patient</a>
-            <a href="{% url 'patient_delete' patient.pk %}" class="inline-block bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">Delete Patient</a>
+        <div>
+            <h1 class="page-title text-2xl font-bold text-slate-900">{{ patient.name }}</h1>
+            <p class="page-subtitle text-sm text-slate-500">Patient Details</p>
         </div>
     </div>
+    <div class="page-header-actions flex gap-3">
+        <a href="{% url 'patients' %}" class="btn btn-secondary">Back</a>
+        <a href="{% url 'patient_update' patient.pk %}" class="btn btn-primary">Edit</a>
+        <a href="{% url 'patient_delete' patient.pk %}" class="btn btn-outline-danger text-red-600 border-red-200 hover:bg-red-50 hover:border-red-300 px-4 py-2 rounded-xl transition">Delete</a>
+    </div>
+</div>
 
-    <div class="bg-white shadow rounded-lg p-6 border border-slate-100">
-        <dl class="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-6">
-            <div>
-                <dt class="text-sm font-medium text-gray-500">Name</dt>
-                <dd class="mt-1 text-sm text-gray-900">{{ patient.name }}</dd>
+<div class="card bg-white shadow rounded-xl border border-slate-100">
+    <div class="card-body p-6">
+        <dl class="detail-grid grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-6">
+            <div class="detail-item">
+                <dt class="text-sm font-medium text-slate-500 mb-1">Name</dt>
+                <dd class="text-slate-900">{{ patient.name }}</dd>
             </div>
-            <div>
-                <dt class="text-sm font-medium text-gray-500">Age</dt>
-                <dd class="mt-1 text-sm text-gray-900">{{ patient.age }}</dd>
+            <div class="detail-item">
+                <dt class="text-sm font-medium text-slate-500 mb-1">Age</dt>
+                <dd class="text-slate-900">{{ patient.age }}</dd>
             </div>
-            <div>
-                <dt class="text-sm font-medium text-gray-500">Gender</dt>
-                <dd class="mt-1 text-sm text-gray-900">{{ patient.gender }}</dd>
+            <div class="detail-item">
+                <dt class="text-sm font-medium text-slate-500 mb-1">Gender</dt>
+                <dd class="text-slate-900">{{ patient.gender }}</dd>
             </div>
-            <div>
-                <dt class="text-sm font-medium text-gray-500">Contact</dt>
-                <dd class="mt-1 text-sm text-gray-900">{{ patient.contact }}</dd>
+            <div class="detail-item">
+                <dt class="text-sm font-medium text-slate-500 mb-1">Contact</dt>
+                <dd class="text-slate-900">{{ patient.contact }}</dd>
             </div>
-            <div class="md:col-span-2">
-                <dt class="text-sm font-medium text-gray-500">Address</dt>
-                <dd class="mt-1 text-sm text-gray-900">{{ patient.address }}</dd>
+            <div class="detail-item full-width md:col-span-2">
+                <dt class="text-sm font-medium text-slate-500 mb-1">Address</dt>
+                <dd class="text-slate-900">{{ patient.address }}</dd>
             </div>
-            <div class="md:col-span-2">
-                <dt class="text-sm font-medium text-gray-500">Medical History</dt>
-                <dd class="mt-1 text-sm text-gray-900 whitespace-pre-wrap">{{ patient.medical_history|default:"None" }}</dd>
+            <div class="detail-item full-width md:col-span-2">
+                <dt class="text-sm font-medium text-slate-500 mb-1">Medical History</dt>
+                <dd class="text-slate-900 whitespace-pre-wrap">{{ patient.medical_history|default:"None" }}</dd>
             </div>
         </dl>
     </div>
