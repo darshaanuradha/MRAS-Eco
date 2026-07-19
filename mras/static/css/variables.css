@@ -136,3 +136,49 @@
     /* ── Spacing Scale (reference) ── */
     /* 1=4px  2=8px  3=12px  4=16px  5=20px  6=24px  8=32px  10=40px  12=48px  16=64px */
 }
+
+/* ============================================
+   Dark Mode Theme Overrides
+   ============================================ */
+.dark {
+    /* ── Layout Colors ── */
+    --bg-body:            var(--slate-950);
+    --bg-card:            var(--slate-900);
+    --bg-sidebar:         var(--slate-950);
+    --bg-sidebar-hover:   rgba(255, 255, 255, 0.05);
+    --bg-sidebar-active:  rgba(6, 182, 212, 0.15);
+    --bg-topbar:          rgba(2, 6, 23, 0.82);
+    --bg-input:           var(--slate-900);
+    --bg-input-disabled:  var(--slate-800);
+
+    /* ── Text Colors ── */
+    --text-heading:        var(--slate-100);
+    --text-body:           var(--slate-300);
+    --text-secondary:      var(--slate-400);
+    --text-muted:          var(--slate-500);
+    --text-inverse:        #ffffff;
+    --text-sidebar:        rgba(255, 255, 255, 0.6);
+    --text-sidebar-hover:  rgba(255, 255, 255, 0.9);
+    --text-sidebar-active: #ffffff;
+    --text-link:           var(--primary-400);
+    --text-link-hover:     var(--primary-300);
+
+    /* ── Borders ── */
+    --border-color:  var(--slate-800);
+    --border-light:  var(--slate-800);
+    --border-input:  var(--slate-700);
+    --border-focus:  var(--primary-500);
+}
+
+/* Patch to handle Tailwind utility classes that were hardcoded in templates */
+.dark .bg-white { background-color: var(--bg-card) !important; }
+.dark .bg-slate-50 { background-color: var(--bg-body) !important; }
+.dark .text-slate-900 { color: var(--text-heading) !important; }
+.dark .text-slate-800 { color: var(--text-heading) !important; }
+.dark .text-slate-700 { color: var(--text-body) !important; }
+.dark .text-slate-600 { color: var(--text-secondary) !important; }
+.dark .text-slate-500 { color: var(--text-muted) !important; }
+.dark .border-slate-200 { border-color: var(--border-color) !important; }
+.dark .border-slate-100 { border-color: var(--border-light) !important; }
+.dark .divide-slate-100 > :not([hidden]) ~ :not([hidden]) { border-color: var(--border-light) !important; }
+.dark .divide-slate-50 > :not([hidden]) ~ :not([hidden]) { border-color: var(--border-light) !important; }

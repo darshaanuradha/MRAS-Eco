@@ -5,11 +5,18 @@ from .models import Medicine, Inventory
 from datetime import timedelta
 from django.utils import timezone
 def inventory_view(request):
+    query = request.GET.get('q', '')
+    
     # Annotate total stock from related Inventory batches
     medicines = Medicine.objects.annotate(
         total_stock=Sum('inventory__current_stock')
-    ).order_by('name')
-    return render(request, 'inventory.html', {'medicines': medicines})
+    )
+    
+    if query:
+        medicines = medicines.filter(name__icontains=query)
+        
+    medicines = medicines.order_by('name')
+    return render(request, 'inventory.html', {'medicines': medicines, 'query': query})
 
 def add_medicine(request):
     if request.method == "POST":
