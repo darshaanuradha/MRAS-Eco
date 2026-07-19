@@ -5,7 +5,7 @@ from .models import Consultation
 from inventory.models import PrescriptionItem, Medicine, Inventory
 
 # Base Tailwind classes for inputs
-TW_INPUT = "mt-1 block w-full rounded-md border border-gray-300 bg-white py-2 px-3 text-sm shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500"
+TW_INPUT = "mt-1 block w-full rounded-xl border border-slate-200 bg-white py-2.5 px-4 text-sm shadow-sm focus:border-cyan-500 focus:outline-none focus:ring-2 focus:ring-cyan-500/40 transition"
 
 class ConsultationForm(forms.ModelForm):
     class Meta:

@@ -1,15 +1,20 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="max-w-md mx-auto mt-10 p-6 bg-white border border-slate-200 rounded-lg">
-    <h2 class="text-xl font-bold mb-4">Delete Medicine</h2>
-    <p class="mb-6">Are you sure you want to delete <strong>{{ medicine.name }}</strong>?</p>
-    <form method="post">
-        {% csrf_token %}
-        <div class="flex gap-4">
-            <a href="{% url 'inventory' %}" class="px-4 py-2 bg-slate-200 rounded">Cancel</a>
-            <button type="submit" class="px-4 py-2 bg-red-600 text-white rounded">Confirm Delete</button>
+<div class="confirm-dialog max-w-md mx-auto mt-10 p-6 bg-white border border-slate-200 rounded-lg shadow-sm">
+    <div class="flex flex-col items-center text-center">
+        <div class="confirm-icon danger mb-4 text-red-500">
+            <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
         </div>
-    </form>
+        <h2 class="confirm-title text-xl font-bold mb-2">Delete Medicine?</h2>
+        <p class="confirm-text text-slate-600 mb-6">Are you sure you want to delete <strong>{{ medicine.name }}</strong>?</p>
+        <form method="post" class="w-full">
+            {% csrf_token %}
+            <div class="confirm-actions flex justify-center gap-4">
+                <a href="{% url 'inventory' %}" class="btn btn-secondary px-4 py-2">Cancel</a>
+                <button type="submit" class="btn btn-danger px-4 py-2">Confirm Delete</button>
+            </div>
+        </form>
+    </div>
 </div>
 {% endblock %}

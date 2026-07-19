@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,363 +6,186 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}MRAS Eco - Dashboard{% endblock %}</title>
     
-    <!-- Tailwind CSS (via CDN for development) -->
     <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- Google Fonts: Inter -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
-    <!-- Custom Config & Utilities -->
-    <style>
-        body { font-family: 'Inter', sans-serif; }
-        
-        .glass-panel {
-            background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-        }
-        
-        .drawer-transition {
-            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
-        }
-
-        @keyframes slideInDown {
-            from { transform: translateY(-100%); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-        .animate-toast { animation: slideInDown 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-        
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
-    </style>
+    <link rel="stylesheet" href="{% static 'css/variables.css' %}">
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    <link rel="stylesheet" href="{% static 'css/components.css' %}">
+    <link rel="stylesheet" href="{% static 'css/layout.css' %}">
+    <link rel="stylesheet" href="{% static 'css/animations.css' %}">
+    <link rel="stylesheet" href="{% static 'css/responsive.css' %}">
+    
+    {% block extra_css %}{% endblock %}
 </head>
-<body class="bg-slate-50 text-slate-800 flex h-screen overflow-hidden antialiased">
-
-    <!-- ONLY SHOW SIDEBAR IF USER IS LOGGED IN -->
-    {% if user.is_authenticated %}
-        
-        <!-- MOBILE OVERLAY -->
-        <div id="mobile-overlay" class="fixed inset-0 bg-slate-900/40 z-30 hidden opacity-0 drawer-transition lg:hidden" onclick="toggleSidebar()"></div>
-
-        <!-- SIDEBAR -->
-        <aside id="sidebar" class="fixed inset-y-0 left-0 z-40 w-72 glass-panel border-r border-slate-200 transform -translate-x-full lg:translate-x-0 lg:relative lg:flex flex-col justify-between drawer-transition shadow-2xl lg:shadow-none">
+<body class="bg-slate-50 text-slate-800 antialiased h-screen overflow-hidden">
+    <div class="app-layout flex h-screen overflow-hidden w-full">
+        {% if user.is_authenticated %}
+            <!-- Mobile Overlay -->
+            <div id="sidebar-overlay" class="sidebar-overlay fixed inset-0 bg-slate-900/40 z-30 hidden lg:hidden"></div>
             
-            <!-- Sidebar Header -->
-            <div>
-                <div class="h-16 flex items-center justify-between px-6 border-b border-slate-100">
-                    <a href="{% url 'home' %}">
-                        <div class="flex items-center gap-2">
-                        <div class="w-8 h-8 rounded-lg bg-emerald-500 flex items-center justify-center shadow-sm">
+            <!-- Sidebar -->
+            <aside id="sidebar" class="sidebar bg-slate-900 text-slate-300 w-72 fixed inset-y-0 left-0 z-40 transform -translate-x-full lg:translate-x-0 lg:static flex flex-col transition-transform duration-300 ease-in-out">
+                <div class="sidebar-header h-16 flex items-center justify-between px-6 border-b border-slate-800">
+                    <a href="{% url 'home' %}" class="sidebar-brand flex items-center gap-2">
+                        <div class="sidebar-brand-icon w-8 h-8 rounded-lg bg-cyan-500 flex items-center justify-center shadow-sm">
                             <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
                         </div>
-                        <span class="text-xl font-bold text-slate-900 tracking-tight">MRAS</span>
-                    </div>
+                        <span class="sidebar-brand-text text-xl font-bold text-white tracking-tight">MRAS</span>
                     </a>
-                    
-                    
-                    <button onclick="toggleSidebar()" class="lg:hidden p-2 text-slate-400 hover:text-slate-600 rounded-lg hover:bg-slate-100">
+                    <button id="sidebar-close-btn" class="sidebar-close-btn lg:hidden text-slate-400 hover:text-white p-2 rounded-lg hover:bg-slate-800">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                     </button>
                 </div>
                 
-                <!-- Navigation Links -->
                 {% include 'sidebar.html' %}
-            </div>
-            
-            <!-- Auth Footer -->
-            <div class="p-4 border-t border-slate-100 bg-slate-50/50">
-                <div class="flex items-center gap-3 mb-4 px-2">
-                    <div class="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-700 font-bold border border-emerald-200 shrink-0">
-                        {{ user.first_name|make_list|first|default:user.username|make_list|first|upper }}
+                
+                <div class="sidebar-footer p-4 border-t border-slate-800">
+                    <div class="sidebar-user flex items-center gap-3 mb-4 px-2">
+                        <div class="sidebar-user-avatar w-10 h-10 rounded-full bg-cyan-900/50 flex items-center justify-center text-cyan-400 font-bold border border-cyan-800 shrink-0">
+                            {{ user.first_name|make_list|first|default:user.username|make_list|first|upper }}
+                        </div>
+                        <div class="overflow-hidden">
+                            <p class="sidebar-user-name text-sm font-semibold text-white truncate">{{ user.first_name|default:user.username }}</p>
+                            <p class="sidebar-user-role text-xs text-slate-400 truncate">Staff Member</p>
+                        </div>
                     </div>
-                    <div class="overflow-hidden">
-                        <p class="text-sm font-semibold text-slate-900 truncate">{{ user.first_name|default:user.username }}</p>
-                        <p class="text-xs text-slate-500 truncate">Staff Member</p>
-                    </div>
+                    <form method="post" action="{% url 'logout' %}">
+                        {% csrf_token %}
+                        <button type="submit" class="sidebar-logout-btn w-full flex items-center justify-center px-4 py-2.5 bg-slate-800 text-slate-300 rounded-lg hover:bg-red-500/10 hover:text-red-400 border border-slate-700 hover:border-red-500/30 transition-all text-sm font-medium">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+                            Sign Out
+                        </button>
+                    </form>
                 </div>
-                <form method="post" action="{% url 'logout' %}">
-                    {% csrf_token %}
-                    <button type="submit" class="w-full flex items-center justify-center px-4 py-2.5 bg-white border border-slate-200 text-slate-700 rounded-lg hover:bg-red-50 hover:text-red-600 hover:border-red-100 transition-all text-sm font-medium shadow-sm">
-                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
-                        Sign Out
-                    </button>
-                </form>
-            </div>
-        </aside>
-
-    {% endif %}
-
-    <!-- MAIN CONTENT AREA -->
-    <main class="flex-1 flex flex-col h-screen overflow-hidden bg-slate-50 relative w-full">
+            </aside>
+        {% endif %}
         
-        <!-- UNIVERSAL TOP HEADER -->
-        {% if user.is_authenticated %}
-            <header class="glass-panel h-16 flex items-center justify-between px-4 sm:px-6 shadow-sm border-b border-slate-200 z-20 flex-shrink-0">
-                
-                <!-- Left: Mobile Hamburger & Logo (Hidden on Desktop) -->
-                <div class="flex items-center gap-3 lg:hidden">
-                    <button onclick="toggleSidebar()" class="p-2 -ml-2 text-slate-600 hover:bg-slate-100 rounded-lg transition-colors focus:ring-2 focus:ring-emerald-500 outline-none">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
-                    </button>
-                    <span class="text-lg font-bold text-slate-900">MRAS Eco</span>
-                </div>
-                
-                <!-- Left: Desktop Empty Spacer -->
-                <div class="hidden lg:block w-full"></div>
-                
-                <!-- Right: Notifications & Profile -->
-                <div class="flex items-center gap-4">
+        <div class="main-wrapper flex-1 flex flex-col min-w-0 bg-slate-50 relative">
+            {% if user.is_authenticated %}
+                <header class="topbar h-16 bg-white border-b border-slate-200 flex items-center justify-between px-4 lg:px-8 shadow-sm z-20 shrink-0">
+                    <div class="topbar-left flex items-center gap-3 lg:hidden">
+                        <button id="sidebar-open-btn" class="topbar-hamburger p-2 -ml-2 text-slate-600 hover:bg-slate-100 rounded-lg focus:ring-2 focus:ring-cyan-500 outline-none">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                        </button>
+                        <span class="topbar-mobile-brand text-lg font-bold text-slate-900">MRAS Eco</span>
+                    </div>
                     
-                    <!-- Notification Bell Dropdown -->
-                    <div class="relative inline-block text-left" id="notification-menu-container">
-                        <button type="button" id="notification-button" data-notif-count="{{ notif_count }}" class="relative p-2 text-slate-500 hover:text-slate-700 focus:outline-none transition-colors rounded-full hover:bg-slate-100">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-        </svg>
-        
-        <!-- Red Badge (Hidden by default, JS will show it if unread) -->
-        <span id="notif-badge" class="hidden absolute top-1 right-1 items-center justify-center px-1.5 py-0.5 text-[10px] font-bold leading-none text-white transform translate-x-1/4 -translate-y-1/4 bg-red-500 rounded-full border-2 border-white">
-            {{ notif_count }}
-        </span>
-    </button>
-
-                        <!-- Dropdown Panel -->
-                        <div id="notification-dropdown" class="hidden absolute right-0 mt-2 w-80 sm:w-96 bg-white rounded-xl shadow-xl ring-1 ring-slate-900/5 z-50 overflow-hidden transform opacity-0 scale-95 transition-all duration-200">
-                            <div class="px-4 py-3 bg-slate-50 border-b border-slate-100 flex justify-between items-center">
-                                <h3 class="text-sm font-bold text-slate-900">Notifications</h3>
-                                <div class="flex items-center gap-3">
-                                    <button type="button" id="mark-all-read" class="text-xs text-emerald-600 hover:text-emerald-700 font-medium">Mark all as read</button>
-                                    <span class="text-xs font-medium text-slate-500 bg-slate-200/50 px-2 py-1 rounded-full">{{ notif_count|default:"0" }} New</span>
-                                </div>
-                            </div>
+                    <div class="hidden lg:block w-full"></div>
+                    
+                    <div class="topbar-right flex items-center gap-4">
+                        <!-- Notifications -->
+                        <div class="relative inline-block text-left" id="notification-menu-container">
+                            <button type="button" id="notification-button" data-notif-count="{{ notif_count }}" class="notif-btn relative p-2 text-slate-500 hover:text-slate-700 rounded-full hover:bg-slate-100">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                                </svg>
+                                <span id="notif-badge" class="notif-badge hidden absolute top-1 right-1 items-center justify-center px-1.5 py-0.5 text-[10px] font-bold text-white bg-red-500 rounded-full border-2 border-white is-visible">
+                                    {{ notif_count }}
+                                </span>
+                            </button>
                             
-                            <div id="notification-list" class="max-h-[28rem] overflow-y-auto divide-y divide-slate-50">
-                                {% if notif_count == 0 %}
+                            <div id="notification-dropdown" class="notif-dropdown hidden absolute right-0 mt-2 w-80 sm:w-96 bg-white rounded-xl shadow-xl ring-1 ring-slate-900/5 z-50 overflow-hidden transform opacity-0 scale-95 transition-all duration-200">
+                                <div class="notif-dropdown-header px-4 py-3 bg-slate-50 border-b border-slate-100 flex justify-between items-center">
+                                    <h3 class="text-sm font-bold text-slate-900">Notifications</h3>
+                                    <div class="flex items-center gap-3">
+                                        <button type="button" id="mark-all-read" class="text-xs text-cyan-600 hover:text-cyan-700 font-medium">Mark all as read</button>
+                                        <span class="text-xs font-medium text-slate-500 bg-slate-200/50 px-2 py-1 rounded-full">{{ notif_count|default:"0" }} New</span>
+                                    </div>
+                                </div>
+                                
+                                <div id="notification-list" class="notif-list max-h-[28rem] overflow-y-auto divide-y divide-slate-50">
+                                    {% if notif_count == 0 %}
                                     <div class="p-8 text-center flex flex-col items-center justify-center text-slate-500">
                                         <div class="w-12 h-12 bg-slate-100 rounded-full flex items-center justify-center mb-3">
                                             <svg class="w-6 h-6 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
                                         </div>
                                         <p class="text-sm font-medium">You're all caught up!</p>
                                     </div>
-                                {% endif %}
-
-                                {% for batch in expired_alerts %}
-                                    <a href="{% url 'stock_view' batch.medicine.pk %}" class="block p-4 hover:bg-slate-50 transition-colors flex gap-3 items-start border-l-4 border-l-red-500">
-                                        <div class="text-red-500 bg-red-50 p-1.5 rounded-full shrink-0 mt-0.5">
+                                    {% endif %}
+                                    
+                                    {% for batch in expired_alerts %}
+                                    <a href="{% url 'stock_view' batch.medicine.pk %}" class="notif-item expired block p-4 hover:bg-slate-50 flex gap-3 items-start border-l-4 border-l-red-500">
+                                        <div class="notif-item-icon text-red-500 bg-red-50 p-1.5 rounded-full shrink-0 mt-0.5">
                                             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
                                         </div>
                                         <div>
-                                            <p class="text-sm font-bold text-slate-900">Batch Expired</p>
-                                            <p class="text-xs text-slate-600 mt-1 leading-relaxed"><span class="font-semibold text-slate-800">{{ batch.medicine.name }}</span> (Batch: {{ batch.batch_number }}) expired on <span class="font-semibold text-red-600">{{ batch.expiry_date }}</span>. Must dispose of {{ batch.current_stock }} units.</p>
+                                            <p class="notif-item-title text-sm font-bold text-slate-900">Batch Expired</p>
+                                            <p class="notif-item-text text-xs text-slate-600 mt-1"><span class="font-semibold text-slate-800">{{ batch.medicine.name }}</span> (Batch: {{ batch.batch_number }}) expired on <span class="font-semibold text-red-600">{{ batch.expiry_date }}</span>. Must dispose of {{ batch.current_stock }} units.</p>
                                         </div>
                                     </a>
-                                {% endfor %}
-
-                                {% for med in low_stock_alerts %}
-                                    <a href="{% url 'stock_view' med.pk %}" class="block p-4 hover:bg-slate-50 transition-colors flex gap-3 items-start border-l-4 border-l-amber-400">
-                                        <div class="text-amber-500 bg-amber-50 p-1.5 rounded-full shrink-0 mt-0.5">
+                                    {% endfor %}
+                                    
+                                    {% for med in low_stock_alerts %}
+                                    <a href="{% url 'stock_view' med.pk %}" class="notif-item low-stock block p-4 hover:bg-slate-50 flex gap-3 items-start border-l-4 border-l-amber-400">
+                                        <div class="notif-item-icon text-amber-500 bg-amber-50 p-1.5 rounded-full shrink-0 mt-0.5">
                                             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 17h8m0 0V9m0 8l-8-8-4 4-6-6"></path></svg>
                                         </div>
                                         <div>
-                                            <p class="text-sm font-bold text-slate-900">Low Stock Alert</p>
-                                            <p class="text-xs text-slate-600 mt-1 leading-relaxed"><span class="font-semibold text-slate-800">{{ med.name }}</span> is running low. <span class="font-semibold text-amber-600">{{ med.total_stock }} units</span> remaining.</p>
+                                            <p class="notif-item-title text-sm font-bold text-slate-900">Low Stock Alert</p>
+                                            <p class="notif-item-text text-xs text-slate-600 mt-1"><span class="font-semibold text-slate-800">{{ med.name }}</span> is running low. <span class="font-semibold text-amber-600">{{ med.total_stock }} units</span> remaining.</p>
                                         </div>
                                     </a>
-                                {% endfor %}
-
-                                {% for batch in expiring_alerts %}
-                                    <a href="{% url 'stock_view' batch.medicine.pk %}" class="block p-4 hover:bg-slate-50 transition-colors flex gap-3 items-start border-l-4 border-l-blue-500">
-                                        <div class="text-blue-500 bg-blue-50 p-1.5 rounded-full shrink-0 mt-0.5">
+                                    {% endfor %}
+                                    
+                                    {% for batch in expiring_alerts %}
+                                    <a href="{% url 'stock_view' batch.medicine.pk %}" class="notif-item expiring block p-4 hover:bg-slate-50 flex gap-3 items-start border-l-4 border-l-blue-500">
+                                        <div class="notif-item-icon text-blue-500 bg-blue-50 p-1.5 rounded-full shrink-0 mt-0.5">
                                             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                                         </div>
                                         <div>
-                                            <p class="text-sm font-bold text-slate-900">Expiring Soon</p>
-                                            <p class="text-xs text-slate-600 mt-1 leading-relaxed"><span class="font-semibold text-slate-800">{{ batch.medicine.name }}</span> (Batch: {{ batch.batch_number }}) will expire on <span class="font-semibold text-blue-600">{{ batch.expiry_date }}</span>.</p>
+                                            <p class="notif-item-title text-sm font-bold text-slate-900">Expiring Soon</p>
+                                            <p class="notif-item-text text-xs text-slate-600 mt-1"><span class="font-semibold text-slate-800">{{ batch.medicine.name }}</span> (Batch: {{ batch.batch_number }}) will expire on <span class="font-semibold text-blue-600">{{ batch.expiry_date }}</span>.</p>
                                         </div>
                                     </a>
-                                {% endfor %}
+                                    {% endfor %}
+                                </div>
                             </div>
                         </div>
+                        
+                        <div class="w-8 h-8 rounded-full bg-cyan-100 flex items-center justify-center text-cyan-700 font-bold text-sm lg:hidden border border-cyan-200">
+                            {{ user.first_name|make_list|first|default:user.username|make_list|first|upper }}
+                        </div>
                     </div>
-
-                    <!-- Mobile Profile Avatar (Hidden on Desktop since it's in the sidebar) -->
-                    <div class="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-700 font-bold text-sm lg:hidden border border-emerald-200">
-                        {{ user.first_name|make_list|first|default:user.username|make_list|first|upper }}
-                    </div>
-                </div>
-            </header>
-        {% endif %}
-
-        <!-- DJANGO MESSAGES (Toast Notifications) -->
-        {% if messages %}
+                </header>
+            {% endif %}
+            
+            {% if messages %}
             <div class="absolute top-4 left-0 right-0 z-50 flex flex-col items-center gap-2 pointer-events-none px-4 mt-16 lg:mt-0">
                 {% for message in messages %}
-                    <div class="animate-toast pointer-events-auto px-4 py-3 rounded-xl shadow-lg border flex items-center gap-3 max-w-md w-full backdrop-blur-md bg-white/90
-                        {% if message.tags == 'success' %} border-emerald-200 text-emerald-800
-                        {% elif message.tags == 'error' %} border-red-200 text-red-800
-                        {% elif message.tags == 'warning' %} border-amber-200 text-amber-800
-                        {% else %} border-blue-200 text-blue-800 {% endif %}">
-                        
-                        <div class="flex-1 text-sm font-medium">{{ message }}</div>
-                        
-                        <button onclick="this.parentElement.remove()" class="text-slate-400 hover:text-slate-600 p-1">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-                        </button>
+                <div class="toast animate-toast pointer-events-auto px-4 py-3 rounded-xl shadow-lg border flex items-center gap-3 max-w-md w-full backdrop-blur-md bg-white/90
+                    {% if message.tags == 'success' %}toast-success border-emerald-200 text-emerald-800 bg-emerald-50
+                    {% elif message.tags == 'error' %}toast-error border-red-200 text-red-800 bg-red-50
+                    {% elif message.tags == 'warning' %}toast-warning border-amber-200 text-amber-800 bg-amber-50
+                    {% else %}toast-info border-blue-200 text-blue-800 bg-blue-50{% endif %}">
+                    
+                    <div class="toast-icon shrink-0">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                     </div>
+                    
+                    <div class="toast-message flex-1 text-sm font-medium">{{ message }}</div>
+                    
+                    <button class="toast-close text-slate-400 hover:text-slate-600 p-1">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                    </button>
+                </div>
                 {% endfor %}
             </div>
-        {% endif %}
-
-        <!-- SCROLLABLE PAGE CONTENT -->
-        <div class="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 w-full {% if not user.is_authenticated %}flex items-center justify-center{% endif %}">
-            <div class="max-w-7xl mx-auto w-full">
-                {% block content %}
-                <!-- Child templates inject their content here -->
-                {% endblock %}
-            </div>
-        </div>
-        
-    </main>
-
-   <!-- UI INTERACTION SCRIPTS -->
-    {% if user.is_authenticated %}
-    <script>
-        // Mobile sidebar toggle
-        const sidebar = document.getElementById('sidebar');
-        const mobileOverlay = document.getElementById('mobile-overlay');
-
-        function openSidebar() {
-            if (!sidebar || !mobileOverlay) return;
-            sidebar.classList.remove('-translate-x-full');
-            sidebar.classList.add('translate-x-0');
-            mobileOverlay.classList.remove('hidden');
-            mobileOverlay.classList.add('opacity-100');
-            document.body.classList.add('overflow-hidden');
-        }
-
-        function closeSidebar() {
-            if (!sidebar || !mobileOverlay) return;
-            sidebar.classList.add('-translate-x-full');
-            sidebar.classList.remove('translate-x-0');
-            mobileOverlay.classList.remove('opacity-100');
-            mobileOverlay.classList.add('hidden');
-            document.body.classList.remove('overflow-hidden');
-        }
-
-        window.toggleSidebar = function () {
-            if (!sidebar || !mobileOverlay) return;
-            if (sidebar.classList.contains('-translate-x-full')) {
-                openSidebar();
-            } else {
-                closeSidebar();
-            }
-        };
-
-        window.addEventListener('resize', function () {
-            if (window.innerWidth >= 1024) {
-                closeSidebar();
-            }
-        });
-
-        document.addEventListener('keydown', function (event) {
-            if (event.key === 'Escape') {
-                closeSidebar();
-            }
-        });
-
-        // Notification Dropdown & Badge Logic
-        const notifBtn = document.getElementById('notification-button');
-        const notifDropdown = document.getElementById('notification-dropdown');
-        const notifBadge = document.getElementById('notif-badge');
-
-        if (notifBtn && notifDropdown) {
-            // 1. Check if badge should be shown on page load
-            const currentCount = parseInt(notifBtn.getAttribute('data-notif-count')) || 0;
-            const acknowledgedCount = parseInt(localStorage.getItem('acknowledged_notif_count')) || 0;
-
-            // Only show the red badge if there are notifications AND the count has changed since last viewed
-            if (currentCount > 0 && currentCount !== acknowledgedCount) {
-                notifBadge.classList.remove('hidden');
-                notifBadge.classList.add('inline-flex'); // Tailwind display class
-            }
-
-            // 2. Handle Clicking the Bell
-            notifBtn.addEventListener('click', function(e) {
-                e.stopPropagation();
-                
-                // Toggle Dropdown
-                if (notifDropdown.classList.contains('hidden')) {
-                    notifDropdown.classList.remove('hidden');
-                    setTimeout(() => {
-                        notifDropdown.classList.remove('opacity-0', 'scale-95');
-                        notifDropdown.classList.add('opacity-100', 'scale-100');
-                    }, 10);
-                    
-                    // Acknowledge notifications and hide the badge instantly
-                    if (currentCount > 0) {
-                        localStorage.setItem('acknowledged_notif_count', currentCount);
-                        notifBadge.classList.remove('inline-flex');
-                        notifBadge.classList.add('hidden');
-                    }
-                } else {
-                    notifDropdown.classList.remove('opacity-100', 'scale-100');
-                    notifDropdown.classList.add('opacity-0', 'scale-95');
-                    setTimeout(() => {
-                        notifDropdown.classList.add('hidden');
-                    }, 200);
-                }
-            });
-
-            // Close notification dropdown when clicking anywhere else
-            document.addEventListener('click', function(e) {
-                if (!notifBtn.contains(e.target) && !notifDropdown.contains(e.target)) {
-                    notifDropdown.classList.remove('opacity-100', 'scale-100');
-                    notifDropdown.classList.add('opacity-0', 'scale-95');
-                    setTimeout(() => {
-                        notifDropdown.classList.add('hidden');
-                    }, 200);
-                }
-            });
+            {% endif %}
             
-            // Mark all as read logic
-            const markAllReadBtn = document.getElementById('mark-all-read');
-            const notifList = document.getElementById('notification-list');
-            if (markAllReadBtn && notifList) {
-                markAllReadBtn.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    // Just update UI to show empty state
-                    notifList.innerHTML = `
-                        <div class="p-8 text-center flex flex-col items-center justify-center text-slate-500">
-                            <div class="w-12 h-12 bg-slate-100 rounded-full flex items-center justify-center mb-3">
-                                <svg class="w-6 h-6 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                            </div>
-                            <p class="text-sm font-medium">You're all caught up!</p>
-                        </div>
-                    `;
-                    // Hide the badge as well
-                    localStorage.setItem('acknowledged_notif_count', currentCount);
-                    notifBadge.classList.remove('inline-flex');
-                    notifBadge.classList.add('hidden');
-                });
-            }
-        }
-    </script>
-    {% endif %}
-
-    <script>
-        // Auto-dismiss Django message toasts after 5 seconds
-        document.addEventListener("DOMContentLoaded", function() {
-            setTimeout(() => {
-                const toasts = document.querySelectorAll('.animate-toast');
-                toasts.forEach(toast => {
-                    toast.style.opacity = '0';
-                    toast.style.transition = 'opacity 0.5s ease';
-                    setTimeout(() => toast.remove(), 500);
-                });
-            }, 5000);
-        });
-    </script>
+            <main class="main-content flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 {% if not user.is_authenticated %}auth-content flex items-center justify-center h-full{% endif %}">
+                <div class="main-content-inner max-w-7xl mx-auto w-full h-full">
+                    {% block content %}{% endblock %}
+                </div>
+            </main>
+            
+            {% if user.is_authenticated %}
+                {% include 'components/footer.html' %}
+            {% endif %}
+        </div>
+    </div>
+    
+    {% block extra_js %}{% endblock %}
+    <script src="{% static 'js/main.js' %}"></script>
 </body>
 </html>
