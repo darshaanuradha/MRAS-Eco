@@ -11,7 +11,7 @@
 
 Built with **Python/Django** and **MySQL**, featuring a modern responsive UI with dark/light theme support.
 
-🌐 **Live Demo:** [http://165.245.177.229/](http://165.245.177.229/)  
+🌐 **Live Demo:** [https://anuradha007.pythonanywhere.com/](https://anuradha007.pythonanywhere.com/)  
 💾 **GitHub:** [darshaanuradha/MRAS-Eco](https://github.com/darshaanuradha/MRAS-Eco)
 
 ---
